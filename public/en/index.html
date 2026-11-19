@@ -713,7 +713,7 @@ svg.ico{width:56px;height:56px;flex:none}
           </div>
           <div class="sub" id="b2cbox" hidden>
             <label for="b2c_tarifa" style="display:block;font-weight:600;margin:12px 0 8px">What rate do you propose for a 60-minute online one-to-one class?</label>
-            <div style="display:flex;align-items:center;gap:10px;max-width:220px"><input type="number" id="b2c_tarifa" name="b2c_tarifa" min="5" max="200" step="1" placeholder="e.g. 30"> <b>€</b></div>
+            <div style="display:flex;align-items:center;gap:10px;max-width:220px"><input type="number" id="b2c_tarifa" name="b2c_tarifa" min="5" max="200" step="1"> <b>€</b></div>
           </div>
         </div>
 
@@ -731,7 +731,7 @@ svg.ico{width:56px;height:56px;flex:none}
       <!-- PASO 3: FORMA DE ENSEÑAR -->
       <fieldset class="step" data-step="3" style="border:0;padding:0;margin:0" hidden>
         <div class="q">
-          <label for="situacion">A real situation</label>
+          <label for="situacion">A real situation (optional)</label>
           <p class="hint">Tomorrow you start with an A1 group of 6 people from an engineering team, from different countries, who don't know each other. How would you start the first class? 3-5 sentences are enough.</p>
           <textarea id="situacion" name="situacion" maxlength="900" placeholder="Write here..."></textarea>
         </div>
@@ -955,7 +955,7 @@ function err(i,msg){
     if(q.closest("[hidden]")) return false;
     const names=new Set([...q.querySelectorAll("input[type=radio],input[type=checkbox]")].filter(x=>!x.closest("[hidden]")&&x.name&&!["bolsa","tools","idiomas","zonas"].includes(x.name)).map(x=>x.name));
     for(const n of names){ if(!q.querySelector(`[name="${n}"]:checked`)) return true; }
-    const req=q.querySelector("#situacion,#nombre,#email");
+    const req=q.querySelector("#nombre,#email");
     if(req && req.value.trim()==="") return true;
     if(q.querySelector("#days") && !anyAvail()) return true;
     return false;
@@ -981,8 +981,7 @@ function validate(i){
     if(val("b2c")==="si" && !(+txt("b2c_tarifa")>0)) return "Tell us the rate you propose for private students.";
   }
   if(i===2){
-    if(txt("situacion").length<120) return "Tell us in 3-5 sentences how you would start the first class and why.";
-  }
+      }
   if(i===3){
     if(!txt("nombre")) return "Please tell us your name.";
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(txt("email"))) return "Please check your email.";

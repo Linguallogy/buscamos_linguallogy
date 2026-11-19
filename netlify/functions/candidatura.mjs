@@ -83,7 +83,7 @@ export default async (req) => {
   try { c = await req.json(); } catch { return json(400, { error: "json" }); }
 
   const nombre = str(c.nombre, 120), email = str(c.email, 200).toLowerCase();
-  if (!nombre || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || c.rgpd !== true || str(c.situacion, 900).length < 120) return json(400, { error: "invalid" });
+  if (!nombre || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || c.rgpd !== true) return json(400, { error: "invalid" });
 
   const ev = evaluate(c);
   if (ev.ko.length) return json(422, { error: "requirements" }); // no se guarda nada
