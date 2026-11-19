@@ -714,6 +714,7 @@ svg.ico{width:56px;height:56px;flex:none}
           <div class="sub" id="b2cbox" hidden>
             <label for="b2c_tarifa" style="display:block;font-weight:600;margin:12px 0 8px">What rate do you propose for a 60-minute online one-to-one class?</label>
             <div style="display:flex;align-items:center;gap:10px;max-width:220px"><input type="number" id="b2c_tarifa" name="b2c_tarifa" min="5" max="200" step="1"> <b>€</b></div>
+            <div class="opts" style="margin-top:10px"><label class="opt"><input type="checkbox" name="b2c_luego" value="si">Not sure yet - we can talk about it later</label></div>
           </div>
         </div>
 
@@ -936,6 +937,7 @@ form.addEventListener("change", e=>{
   const qq=e.target.closest(".q"); if(qq){ qq.classList.remove("miss"); qq.removeAttribute("aria-invalid"); }
   const st=e.target.closest(".step"); if(st){ const er=st.querySelector(".err"); if(er){ er.textContent=""; er.classList.remove("show"); } }
   if(e.target.name==="b2c") document.getElementById("b2cbox").hidden = e.target.value!=="si";
+  if(e.target.name==="b2c_luego"){ const t=document.getElementById("b2c_tarifa"); t.disabled=e.target.checked; if(e.target.checked) t.value=""; }
 });
 
 function show(i){
@@ -953,7 +955,7 @@ function err(i,msg){
   if(!msg) return;
   const miss=[...steps[i].querySelectorAll(".q")].find(q=>{
     if(q.closest("[hidden]")) return false;
-    const names=new Set([...q.querySelectorAll("input[type=radio],input[type=checkbox]")].filter(x=>!x.closest("[hidden]")&&x.name&&!["bolsa","tools","idiomas","zonas"].includes(x.name)).map(x=>x.name));
+    const names=new Set([...q.querySelectorAll("input[type=radio],input[type=checkbox]")].filter(x=>!x.closest("[hidden]")&&x.name&&!["bolsa","tools","idiomas","zonas","b2c_luego"].includes(x.name)).map(x=>x.name));
     for(const n of names){ if(!q.querySelector(`[name="${n}"]:checked`)) return true; }
     const req=q.querySelector("#nombre,#email");
     if(req && req.value.trim()==="") return true;
@@ -978,7 +980,7 @@ function validate(i){
   }
   if(i===1){
     if(!val("clientes")||!val("corporativo")||!vals("niveles").length||!val("online")||!val("b2c")||!val("dele")) return "Please answer all the questions.";
-    if(val("b2c")==="si" && !(+txt("b2c_tarifa")>0)) return "Tell us the rate you propose for private students.";
+    if(val("b2c")==="si" && !(+txt("b2c_tarifa")>0) && !val("b2c_luego")) return "Tell us the rate you propose for private students.";
   }
   if(i===2){
       }
@@ -1046,7 +1048,7 @@ function payload(){
     disponibilidad: CONFIG.days.map((_,d)=>intervals(d).map(([f,t])=>({dia:d+1,de:toTime(f),a:toTime(t)}))).flat(),   // dia: 1 = lunes ... 7 = domingo
     clases_posibles: possibleClasses(), clases_finde: weekendClasses(), clientes: val("clientes"), corporativo: val("corporativo"), online: val("online"),
     tools: vals("tools"), idiomas: vals("idiomas"), idiomas_otros: txt("idiomas_otros"),
-    b2c: val("b2c"), b2c_tarifa: val("b2c")==="si" ? +txt("b2c_tarifa") : null,
+    b2c: val("b2c"), b2c_tarifa: val("b2c")==="si" && +txt("b2c_tarifa")>0 ? +txt("b2c_tarifa") : null,
     niveles: vals("niveles"), volumen: val("volumen"), situacion: txt("situacion"), enlaces: txt("enlaces"), fuente: txt("fuente"),
     dele: val("dele"), zonas: vals("zonas"),
     rgpd: true, bolsa: form.querySelector('[name="bolsa"]').checked,
