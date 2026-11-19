@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 770 440">
+<defs>
+  <filter id="graphite" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="2" seed="2" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="2.6" result="d"/><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.4 1.3" result="m"/><feComposite in="d" in2="m" operator="in"/></filter>
+  <filter id="crayon" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="8" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="3" result="d"/><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="11" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -.9 1.25" result="m"/><feComposite in="d" in2="m" operator="in"/></filter>
+  <style>
+    .ink{fill:none;stroke:#4b4d55;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;filter:url(#graphite)}
+    .thin{stroke-width:1.6}
+    .cf{filter:url(#crayon);opacity:.95}
+    .hand{font-family:Caveat,'Segoe Print','Bradley Hand',cursive;font-weight:700;fill:#24252b}
+  </style>
+</defs>
+
+<!-- suelo -->
+<path class="ink thin" d="M10 410c200-6 520-6 750 2"/>
+
+<!-- PROFESOR ONLINE con auriculares -->
+<path class="cf" d="M8 300h150v14H8z" fill="#a8e6c9"/>
+<g class="ink"><path d="M6 300c50-2 104-2 154 1v14c-50 2-104 2-154 0z"/><path d="M24 315l-4 90M142 315l4 90"/></g>
+<!-- monitor -->
+<path class="cf" d="M92 222h62v44H92z" fill="#e7f6fd"/>
+<g class="ink"><path d="M90 220h66v48H90z"/><path d="M118 268v18M106 288h26"/></g>
+<circle class="cf" cx="108" cy="236" r="6" fill="#ffc59a"/><circle class="cf" cx="136" cy="236" r="6" fill="#cfc3ff"/><circle class="cf" cx="108" cy="254" r="6" fill="#a8e6c9"/><circle class="cf" cx="136" cy="254" r="6" fill="#ffe08a"/>
+<g class="ink thin"><path d="M92 245h62M123 222v44"/></g>
+<!-- persona -->
+<path class="cf" d="M52 234c-16 4-22 22-22 46v20h52v-20c0-24-6-42-22-46z" fill="#ffc59a"/>
+<circle class="cf" cx="56" cy="200" r="21" fill="#f6d3b3"/>
+<path class="cf" d="M35 198c0-16 10-24 22-24s21 8 21 22c-6-8-14-10-22-10-8 0-14 6-21 12z" fill="#c9a24a"/>
+<g class="ink">
+  <circle cx="56" cy="200" r="21"/>
+  <path d="M35 198c0-16 10-24 22-24s21 8 21 22"/>
+  <path d="M52 234c-16 4-22 22-22 46v20M60 234c14 4 22 20 26 36l8 16"/>
+</g>
+<!-- auriculares y micro -->
+<g class="ink"><path d="M32 200c-2-34 50-34 48 0"/></g>
+<rect class="cf" x="27" y="193" width="9" height="16" rx="4" fill="#1679b5"/><rect class="cf" x="76" y="193" width="9" height="16" rx="4" fill="#1679b5"/>
+<g class="ink thin"><rect x="27" y="193" width="9" height="16" rx="4"/><rect x="76" y="193" width="9" height="16" rx="4"/><path d="M80 208c0 10-6 14-14 14"/></g>
+<circle class="cf" cx="64" cy="222" r="3.5" fill="#24252b"/>
+<g fill="#24252b"><circle cx="50" cy="200" r="2"/><circle cx="62" cy="200" r="2"/></g>
+<path class="ink thin" d="M50 210c3 3 7 3 10 0"/>
+<!-- ondas -->
+<g class="ink thin"><path d="M164 214c6 4 6 12 0 16M172 208c10 7 10 21 0 28"/></g>
+<text class="hand" x="14" y="152" font-size="20">¡Hola a todos!</text>
+<g transform="translate(150 0)">
+<!-- PIZARRA -->
+<path class="cf" d="M40 46h250v160H40z" fill="#ffffff"/>
+<g class="ink">
+  <path d="M36 42c84-3 170-3 258 1l-1 168c-86 2-172 2-257 0z"/>
+  <path d="M70 212l-14 98M262 212l14 98"/>
+  <path d="M110 214h112"/>
+</g>
+<!-- contenido de la pizarra: ser / estar -->
+<path class="cf" d="M62 70h82v40H62z" fill="#a9dcf5"/>
+<path class="cf" d="M178 70h96v40h-96z" fill="#ffe08a"/>
+<g class="ink thin"><path d="M62 70h82v40H62zM178 70h96v40h-96z"/></g>
+<text class="hand" x="103" y="100" text-anchor="middle" font-size="28">ser</text>
+<text class="hand" x="226" y="100" text-anchor="middle" font-size="28">estar</text>
+<g class="ink thin"><path d="M103 116v22M226 116v22"/><path d="M97 132l6 7 6-7M220 132l6 7 6-7"/></g>
+<text class="hand" x="103" y="166" text-anchor="middle" font-size="19">¿quién?</text>
+<text class="hand" x="226" y="166" text-anchor="middle" font-size="19">¿cómo?</text>
+<path class="cf" d="M210 180c4-8 13-8 16 0 3-8 12-8 16 0 0 8-16 16-16 16s-16-8-16-16z" fill="#ffb8c4"/>
+<g class="ink thin"><path d="M210 180c4-8 13-8 16 0 3-8 12-8 16 0 0 8-16 16-16 16s-16-8-16-16z"/></g>
+<text class="hand" x="98" y="194" text-anchor="middle" font-size="17">soy Ana</text>
+
+</g>
+<g transform="translate(185 0)">
+<!-- PROFESORA 1: de pie en la pizarra, explicando -->
+<path class="cf" d="M300 196c-14 4-20 20-22 44l-6 82h68l-4-82c-2-24-10-40-24-44z" fill="#a8e6c9"/>
+<circle class="cf" cx="306" cy="160" r="22" fill="#f6d3b3"/>
+<path class="cf" d="M282 156c0-18 12-28 26-28 15 0 24 12 22 26-6-8-16-12-26-10-8 2-16 6-22 12z" fill="#7a4a2a"/>
+<path class="cf" d="M326 150c8 14 8 30 2 40" fill="none" stroke="#7a4a2a" stroke-width="7"/>
+<g class="ink">
+  <circle cx="306" cy="160" r="22"/>
+  <path d="M282 156c0-18 12-28 26-28 15 0 24 12 22 26M326 150c8 14 8 30 2 40"/>
+  <path d="M300 196c-14 4-20 20-22 44l-6 82h68l-4-82c-2-24-10-40-24-44"/>
+  <path d="M286 214c-14 4-22-10-30-28l-6-14"/>
+  <path d="M332 222c6 22 6 44 0 60"/>
+  <path d="M290 322l-4 82M322 322l4 82M278 404h14M320 404h14"/>
+</g>
+<path d="M246 168l10 10" stroke="#f7911e" stroke-width="7" stroke-linecap="round"/>
+<g fill="#24252b"><circle cx="299" cy="160" r="2"/><circle cx="313" cy="160" r="2"/></g>
+<path class="ink thin" d="M300 170c4 4 9 4 12 0"/>
+
+</g>
+<g transform="translate(215 0)">
+<!-- MESA -->
+<path class="cf" d="M330 300h214v16H330z" fill="#ffc59a"/>
+<g class="ink"><path d="M326 300c74-2 148-2 222 1v16c-74 2-148 2-222 0z"/><path d="M350 317l-6 88M526 317l6 88"/></g>
+
+<!-- PROFESOR 2: sentado con un libro -->
+<path class="cf" d="M392 232c-16 4-22 22-22 46v22h56v-22c0-24-6-42-22-46z" fill="#a9dcf5"/>
+<circle class="cf" cx="398" cy="200" r="21" fill="#e0ac84"/>
+<path class="cf" d="M377 196c2-14 12-20 22-20 12 0 21 8 21 20-8-6-18-8-26-6-6 2-12 4-17 6z" fill="#2b2b33"/>
+<g class="ink">
+  <circle cx="398" cy="200" r="21"/>
+  <path d="M377 196c2-14 12-20 22-20 12 0 21 8 21 20"/>
+  <path d="M392 232c-16 4-22 22-22 46v22M404 232c16 4 22 22 22 46v22"/>
+</g>
+<!-- libro abierto -->
+<path class="cf" d="M372 262l26 6v32l-26-6z" fill="#ffe08a"/>
+<path class="cf" d="M424 262l-26 6v32l26-6z" fill="#ffffff"/>
+<g class="ink"><path d="M372 262l26 6 26-6v32l-26 6-26-6z"/><path d="M398 268v32"/><path d="M379 274l13 3M379 282l13 3M405 277l13-3M405 285l13-3"/></g>
+<g fill="#24252b"><circle cx="391" cy="201" r="2"/><circle cx="405" cy="201" r="2"/></g>
+<path class="ink thin" d="M392 210c4 4 8 4 12 0"/>
+
+<!-- PROFESORA 3: con portátil, saludando -->
+<path class="cf" d="M480 226c-16 4-22 22-22 46v28h56v-28c0-24-6-42-22-46z" fill="#cfc3ff"/>
+<circle class="cf" cx="486" cy="194" r="21" fill="#c58a62"/>
+<path class="cf" d="M463 194c-6-18 6-32 23-32 18 0 30 14 23 32 4 10 2 20-4 26-2-14-4-24-19-28-12 4-16 14-19 28-6-6-8-16-4-26z" fill="#d9822b"/>
+<g class="ink">
+  <circle cx="486" cy="194" r="21"/>
+  <path d="M463 194c-6-18 6-32 23-32 18 0 30 14 23 32 4 10 2 20-4 26M463 194c-4 10-2 20 4 26"/>
+  <path d="M480 226c-16 4-22 22-22 46v28M492 226c14 4 22 18 30 6l12-26"/>
+  <path d="M530 206l6-8M536 210l8-4M528 200l2-9"/>
+</g>
+<!-- portátil -->
+<path class="cf" d="M452 262h44v30h-44z" fill="#e7f6fd"/>
+<g class="ink"><path d="M452 262h44v30h-44z"/><path d="M444 300h60"/><path d="M466 274l-5 4 5 4M482 274l5 4-5 4"/></g>
+<g fill="#24252b"><circle cx="479" cy="196" r="2"/><circle cx="493" cy="196" r="2"/></g>
+<path class="ink thin" d="M478 204c5 6 11 6 16 0"/>
+
+<!-- taza y naranja sobre la mesa -->
+<path class="cf" d="M432 282h16v18h-16z" fill="#ffffff"/>
+<g class="ink thin"><path d="M432 282h16v18h-16zM448 286c6 0 6 10 0 10"/><path d="M436 276c0-4 3-4 3-8M443 276c0-4 3-4 3-8"/></g>
+<circle class="cf" cx="352" cy="290" r="10" fill="#f7911e"/>
+<g class="ink thin"><circle cx="352" cy="290" r="10"/><path d="M353 280c3-6 9-7 12-5-3 5-8 7-12 5z"/></g>
+
+<!-- bocadillo -->
+<path class="cf" d="M346 110c0-18 22-28 72-28s72 10 72 28-22 28-72 28c-8 0-16 0-22-1l-18 14 4-16c-22-4-36-12-36-25z" fill="#ffffff"/>
+<g class="ink thin"><path d="M346 110c0-18 22-28 72-28s72 10 72 28-22 28-72 28c-8 0-16 0-22-1l-18 14 4-16c-22-4-36-12-36-25z"/></g>
+<text class="hand" x="418" y="118" text-anchor="middle" font-size="22">¡Buena idea!</text>
+
+<!-- estrellitas -->
+<g class="ink thin"><path d="M512 70l3 8 8 3-8 3-3 8-3-8-8-3 8-3zM318 64l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></g>
+</g>
+</svg>
