@@ -47,6 +47,11 @@ create table if not exists public.candidaturas (
 -- Nadie entra desde el navegador: solo la función de Netlify con la service key.
 alter table public.candidaturas enable row level security;
 
+-- Solo la clave secreta (service_role) puede leer y escribir
+grant usage on schema public to service_role;
+grant select, insert, update, delete on table public.candidaturas to service_role;
+grant usage, select on all sequences in schema public to service_role;
+
 -- Ranking para revisar (Table Editor > candidaturas_ranking)
 create or replace view public.candidaturas_ranking with (security_invoker = true) as
 select id, created_at, estado, score, modalidad, flags,
