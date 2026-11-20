@@ -103,7 +103,7 @@ export default async (req) => {
   const row = {
     nombre, email, contacto: str(c.contacto, 120), comentario: str(c.comentario, 800),
     lang_form: ["es", "en", "ca"].includes(c.lang_form) ? c.lang_form : "es",
-    idioma_ensena: str(c.idioma_ensena, 20), idioma_extra: arr(c.idioma_extra), nivel: str(c.nivel, 5),
+    idioma_ensena: str(c.idioma_ensena, 20), variedad: str(c.variedad, 60) || null, idioma_extra: arr(c.idioma_extra), nivel: str(c.nivel, 5),
     ele: str(c.ele, 20), anos: str(c.anos, 10), autonomo: str(c.autonomo, 20), tarifa: str(c.tarifa, 20),
     disponibilidad: Array.isArray(c.disponibilidad) ? c.disponibilidad.slice(0, 100) : [],
     clases_posibles: ev.weekday, clases_finde: ev.weekend, volumen: str(c.volumen, 10), zonas: arr(c.zonas),
@@ -121,8 +121,14 @@ export default async (req) => {
   const sbHeaders = { ...sbAuth(SB_KEY), "Content-Type": "application/json", Prefer: "return=representation" };
 
   let ins;
+  const guardar = (r) => fetch(`${SB_URL}/rest/v1/candidaturas`, { method: "POST", headers: sbHeaders, body: JSON.stringify(r) });
   try {
-    ins = await fetch(`${SB_URL}/rest/v1/candidaturas`, { method: "POST", headers: sbHeaders, body: JSON.stringify(row) });
+    ins = await guardar(row);
+    // Si la columna «variedad» aún no existe en la tabla, guardamos sin ella para no perder la candidatura
+    if (!ins.ok && ins.status === 400) {
+      const t = await ins.clone().text();
+      if (t.includes("variedad")) { console.error("falta la columna variedad; guardo sin ella"); const { variedad, ...sin } = row; ins = await guardar(sin); }
+    }
   } catch (e) { console.error("supabase: sin conexión", String(e).slice(0, 200)); return json(500, { error: "store" }); }
   if (!ins.ok) {
     // el cuerpo de error de Supabase describe el problema (columna, clave...), no contiene los datos enviados

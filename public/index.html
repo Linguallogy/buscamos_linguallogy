@@ -573,6 +573,28 @@ svg.ico{width:56px;height:56px;flex:none}
             <label class="opt"><input type="radio" name="idioma_ensena" value="Inglés">Inglés</label>
             <label class="opt"><input type="radio" name="idioma_ensena" value="Catalán">Catalán</label>
           </div>
+          <div id="varbox" hidden>
+            <span class="ql" style="margin:14px 0 4px;font-weight:500;font-size:15px">¿Qué variedad hablas? (opcional)</span>
+            <p class="hint" style="margin:0 0 8px">Nos ayuda a proponerte grupos: algunas empresas prefieren una variedad concreta.</p>
+            <div class="opts row" data-var="Español" hidden>
+              <label class="opt"><input type="radio" name="variedad" value="Español: Peninsular (España)">Peninsular (España)</label>
+              <label class="opt"><input type="radio" name="variedad" value="Español: Mexicana / centroamericana">Mexicana / centroamericana</label>
+              <label class="opt"><input type="radio" name="variedad" value="Español: Rioplatense">Rioplatense</label>
+              <label class="opt"><input type="radio" name="variedad" value="Español: Caribeña">Caribeña</label>
+              <label class="opt"><input type="radio" name="variedad" value="Español: Andina">Andina</label>
+              <label class="opt"><input type="radio" name="variedad" value="Español: Chilena">Chilena</label>
+              <label class="opt"><input type="radio" name="variedad" value="Español: Otra">Otra</label>
+            </div>
+            <div class="opts row" data-var="Inglés" hidden>
+              <label class="opt"><input type="radio" name="variedad" value="Inglés: Británico">Británico</label>
+              <label class="opt"><input type="radio" name="variedad" value="Inglés: Americano">Americano</label>
+              <label class="opt"><input type="radio" name="variedad" value="Inglés: Irlandés">Irlandés</label>
+              <label class="opt"><input type="radio" name="variedad" value="Inglés: Australiano / neozelandés">Australiano / neozelandés</label>
+              <label class="opt"><input type="radio" name="variedad" value="Inglés: Sudafricano">Sudafricano</label>
+              <label class="opt"><input type="radio" name="variedad" value="Inglés: Canadiense">Canadiense</label>
+              <label class="opt"><input type="radio" name="variedad" value="Inglés: Otro">Otro</label>
+            </div>
+          </div>
           <span class="ql" style="margin:14px 0 8px;font-weight:500;font-size:15px">¿Puedes enseñar también otro? (opcional)</span>
           <div class="opts row">
             <label class="opt"><input type="checkbox" name="idioma_extra" value="Español">Español</label>
@@ -935,6 +957,11 @@ form.addEventListener("change", e=>{
     if(e.target===solo && solo.checked) z.forEach(x=>{ if(x!==solo) x.checked=false; });
     else if(e.target!==solo && e.target.checked) solo.checked=false;
   }
+  if(e.target.name==="idioma_ensena"){
+    const vb=document.getElementById("varbox"); let any=false;
+    vb.querySelectorAll("[data-var]").forEach(g=>{ const on=g.dataset.var===e.target.value; g.hidden=!on; any=any||on; if(!on) g.querySelectorAll("input").forEach(i=>i.checked=false); });
+    vb.hidden=!any;
+  }
   if(e.target.name==="idioma_ensena") form.querySelectorAll('[name="idioma_extra"]').forEach(x=>{ x.disabled = x.value===e.target.value; if(x.disabled) x.checked=false; x.closest(".opt").style.opacity = x.disabled?".45":""; });
   const qq=e.target.closest(".q"); if(qq){ qq.classList.remove("miss"); qq.removeAttribute("aria-invalid"); }
   const st=e.target.closest(".step"); if(st){ const er=st.querySelector(".err"); if(er){ er.textContent=""; er.classList.remove("show"); } }
@@ -957,7 +984,7 @@ function err(i,msg){
   if(!msg) return;
   const miss=[...steps[i].querySelectorAll(".q")].find(q=>{
     if(q.closest("[hidden]")) return false;
-    const names=new Set([...q.querySelectorAll("input[type=radio],input[type=checkbox]")].filter(x=>!x.closest("[hidden]")&&x.name&&!["bolsa","tools","idiomas","zonas","b2c_luego"].includes(x.name)).map(x=>x.name));
+    const names=new Set([...q.querySelectorAll("input[type=radio],input[type=checkbox]")].filter(x=>!x.closest("[hidden]")&&x.name&&!["bolsa","tools","idiomas","zonas","b2c_luego","variedad"].includes(x.name)).map(x=>x.name));
     for(const n of names){ if(!q.querySelector(`[name="${n}"]:checked`)) return true; }
     const req=q.querySelector("#nombre,#email");
     if(req && req.value.trim()==="") return true;
@@ -1045,7 +1072,7 @@ function payload(){
   return {
     nombre: txt("nombre"), email: txt("email"), contacto: txt("tel"), comentario: txt("comentario"),
     nivel: val("nivel"),
-    idioma_ensena: val("idioma_ensena"), idioma_extra: vals("idioma_extra").filter(x=>x!==val("idioma_ensena")), lang_form: document.documentElement.lang,
+    idioma_ensena: val("idioma_ensena"), variedad: val("variedad")||"", idioma_extra: vals("idioma_extra").filter(x=>x!==val("idioma_ensena")), lang_form: document.documentElement.lang,
     ele: val("ele"), anos: val("anos"), autonomo: val("autonomo"), tarifa: val("tarifa"),
     disponibilidad: CONFIG.days.map((_,d)=>intervals(d).map(([f,t])=>({dia:d+1,de:toTime(f),a:toTime(t)}))).flat(),   // dia: 1 = lunes ... 7 = domingo
     clases_posibles: possibleClasses(), clases_finde: weekendClasses(), clientes: val("clientes"), corporativo: val("corporativo"), online: val("online"),

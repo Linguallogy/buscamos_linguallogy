@@ -15,6 +15,7 @@ create table if not exists public.candidaturas (
   comentario      text,
   lang_form       text,
   idioma_ensena   text,
+  variedad        text,                              -- variedad / acento (opcional, no puntúa)
   idioma_extra    text[],
   nivel           text,
   ele             text,
@@ -58,7 +59,7 @@ select id, created_at, estado, score, modalidad, flags,
        case when score >= 70 then 'llamar'
             when score >= 60 then 'revisar a mano'
             else 'ranking' end as revisar,
-       nombre, email, contacto, idioma_ensena, nivel, ele, anos, zonas, clases_posibles, volumen,
+       nombre, email, contacto, idioma_ensena, variedad, nivel, ele, anos, zonas, clases_posibles, volumen,
        tarifa, enlaces, situacion, comentario, bolsa, cv_path
 from public.candidaturas
 order by score desc, created_at desc;
