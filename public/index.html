@@ -739,11 +739,6 @@ svg.ico{width:56px;height:56px;flex:none}
       <!-- PASO 3: FORMA DE ENSEÑAR -->
       <fieldset class="step" data-step="3" style="border:0;padding:0;margin:0" hidden>
         <div class="q">
-          <label for="situacion">Una situación real (opcional)</label>
-          <p class="hint">Mañana empiezas con un grupo A1 de 6 personas de un equipo de ingeniería, de distintos países, que no se conocen. ¿Cómo empezarías la primera clase? 3-5 frases bastan.</p>
-          <textarea id="situacion" name="situacion" maxlength="900" placeholder="Escribe aquí..."></textarea>
-        </div>
-        <div class="q">
           <label for="enlaces">Tu CV o tu perfil (opcional, nos ayuda a valorar tu candidatura)</label>
           <p class="hint">Adjunta tu CV en PDF o pega un enlace: LinkedIn, tu web, Google Drive...</p>
           <label class="opt cvbtn" id="cvlabel"><input type="file" id="cv" accept="application/pdf,.pdf" style="position:absolute;opacity:0;width:1px;height:1px"><span id="cvtxt">Adjuntar CV (PDF, máx. 4 MB)</span></label>
@@ -1056,7 +1051,7 @@ function payload(){
     clases_posibles: possibleClasses(), clases_finde: weekendClasses(), clientes: val("clientes"), corporativo: val("corporativo"), online: val("online"),
     tools: vals("tools"), idiomas: vals("idiomas"), idiomas_otros: txt("idiomas_otros"),
     b2c: val("b2c"), b2c_tarifa: val("b2c")==="si" && +txt("b2c_tarifa")>0 ? +txt("b2c_tarifa") : null,
-    niveles: vals("niveles"), volumen: val("volumen"), situacion: txt("situacion"), enlaces: txt("enlaces"), fuente: txt("fuente"),
+    niveles: vals("niveles"), volumen: val("volumen"), enlaces: txt("enlaces"), fuente: txt("fuente"),
     dele: val("dele"), zonas: vals("zonas"),
     rgpd: true, bolsa: form.querySelector('[name="bolsa"]').checked,
     ts: new Date().toISOString()

@@ -4,7 +4,7 @@ alter table public.candidaturas add column if not exists cv_path text;
 create or replace view public.candidaturas_ranking with (security_invoker = true) as
 select id, created_at, estado, score, modalidad, flags,
        case when score >= 70 then 'llamar'
-            when score >= 60 then 'leer situación'
+            when score >= 60 then 'revisar a mano'
             else 'ranking' end as revisar,
        nombre, email, contacto, idioma_ensena, nivel, ele, anos, zonas, clases_posibles, volumen,
        tarifa, enlaces, situacion, comentario, bolsa, cv_path
