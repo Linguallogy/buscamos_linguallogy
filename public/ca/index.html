@@ -192,6 +192,7 @@ details.en p{color:var(--ink2);margin-top:10px;max-width:46em}
 .q > label.opt{display:flex;align-items:flex-start;font-weight:400;margin:0 0 8px}
 .q > label.cvbtn{justify-content:center;border-style:dashed;font-weight:500;color:var(--blue-deep);position:relative}
 .q > label.cvbtn.has{border-style:solid;border-color:var(--mint);background:var(--t-mint);color:var(--ink)}
+.opt img.flag{width:24px;height:18px;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.12);flex:none;object-fit:cover}
 .linkbtn{background:none;border:0;padding:2px 0;color:var(--blue-deep);text-decoration:underline;cursor:pointer;font:inherit;font-size:14px}
 .price-tag b span{font-size:inherit;font-weight:inherit}
 .price-tag > span span{font-size:inherit;font-weight:600}
@@ -574,25 +575,29 @@ svg.ico{width:56px;height:56px;flex:none}
             <label class="opt"><input type="radio" name="idioma_ensena" value="Catalán">Català</label>
           </div>
           <div id="varbox" hidden>
-            <span class="ql" style="margin:14px 0 4px;font-weight:500;font-size:15px">Quina varietat parles? (opcional)</span>
-            <p class="hint" style="margin:0 0 8px">Ens ajuda a proposar-te grups: algunes empreses prefereixen una varietat concreta.</p>
+            <span class="ql" style="margin:14px 0 8px;font-weight:500;font-size:15px">De quin país és el teu accent? (opcional)</span>
             <div class="opts row" data-var="Español" hidden>
-              <label class="opt"><input type="radio" name="variedad" value="Español: Peninsular (España)">Peninsular (Espanya)</label>
-              <label class="opt"><input type="radio" name="variedad" value="Español: Mexicana / centroamericana">Mexicana / centreamericana</label>
-              <label class="opt"><input type="radio" name="variedad" value="Español: Rioplatense">Rioplatense</label>
-              <label class="opt"><input type="radio" name="variedad" value="Español: Caribeña">Caribenya</label>
-              <label class="opt"><input type="radio" name="variedad" value="Español: Andina">Andina</label>
-              <label class="opt"><input type="radio" name="variedad" value="Español: Chilena">Xilena</label>
-              <label class="opt"><input type="radio" name="variedad" value="Español: Otra">Una altra</label>
+              <label class="opt"><input type="radio" name="variedad" value="España"><img src="../img/flags/es.svg" alt="" class="flag" loading="lazy">Espanya</label>
+              <label class="opt"><input type="radio" name="variedad" value="México"><img src="../img/flags/mx.svg" alt="" class="flag" loading="lazy">Mèxic</label>
+              <label class="opt"><input type="radio" name="variedad" value="Argentina"><img src="../img/flags/ar.svg" alt="" class="flag" loading="lazy">Argentina</label>
+              <label class="opt"><input type="radio" name="variedad" value="Colombia"><img src="../img/flags/co.svg" alt="" class="flag" loading="lazy">Colòmbia</label>
+              <label class="opt"><input type="radio" name="variedad" value="Venezuela"><img src="../img/flags/ve.svg" alt="" class="flag" loading="lazy">Veneçuela</label>
+              <label class="opt"><input type="radio" name="variedad" value="Chile"><img src="../img/flags/cl.svg" alt="" class="flag" loading="lazy">Xile</label>
+              <label class="opt"><input type="radio" name="variedad" value="Perú"><img src="../img/flags/pe.svg" alt="" class="flag" loading="lazy">Perú</label>
+              <label class="opt"><input type="radio" name="variedad" value="Cuba"><img src="../img/flags/cu.svg" alt="" class="flag" loading="lazy">Cuba</label>
+              <label class="opt"><input type="radio" name="variedad" value="Uruguay"><img src="../img/flags/uy.svg" alt="" class="flag" loading="lazy">Uruguai</label>
+              <label class="opt"><input type="radio" name="variedad" value="Ecuador"><img src="../img/flags/ec.svg" alt="" class="flag" loading="lazy">Equador</label>
+              <label class="opt"><input type="radio" name="variedad" value="Otro">Un altre</label>
             </div>
             <div class="opts row" data-var="Inglés" hidden>
-              <label class="opt"><input type="radio" name="variedad" value="Inglés: Británico">Britànic</label>
-              <label class="opt"><input type="radio" name="variedad" value="Inglés: Americano">Americà</label>
-              <label class="opt"><input type="radio" name="variedad" value="Inglés: Irlandés">Irlandès</label>
-              <label class="opt"><input type="radio" name="variedad" value="Inglés: Australiano / neozelandés">Australià / neozelandès</label>
-              <label class="opt"><input type="radio" name="variedad" value="Inglés: Sudafricano">Sud-africà</label>
-              <label class="opt"><input type="radio" name="variedad" value="Inglés: Canadiense">Canadenc</label>
-              <label class="opt"><input type="radio" name="variedad" value="Inglés: Otro">Un altre</label>
+              <label class="opt"><input type="radio" name="variedad" value="Reino Unido"><img src="../img/flags/gb.svg" alt="" class="flag" loading="lazy">Regne Unit</label>
+              <label class="opt"><input type="radio" name="variedad" value="Estados Unidos"><img src="../img/flags/us.svg" alt="" class="flag" loading="lazy">Estats Units</label>
+              <label class="opt"><input type="radio" name="variedad" value="Irlanda"><img src="../img/flags/ie.svg" alt="" class="flag" loading="lazy">Irlanda</label>
+              <label class="opt"><input type="radio" name="variedad" value="Australia"><img src="../img/flags/au.svg" alt="" class="flag" loading="lazy">Austràlia</label>
+              <label class="opt"><input type="radio" name="variedad" value="Nueva Zelanda"><img src="../img/flags/nz.svg" alt="" class="flag" loading="lazy">Nova Zelanda</label>
+              <label class="opt"><input type="radio" name="variedad" value="Sudáfrica"><img src="../img/flags/za.svg" alt="" class="flag" loading="lazy">Sud-àfrica</label>
+              <label class="opt"><input type="radio" name="variedad" value="Canadá"><img src="../img/flags/ca.svg" alt="" class="flag" loading="lazy">Canadà</label>
+              <label class="opt"><input type="radio" name="variedad" value="Otro">Un altre</label>
             </div>
           </div>
           <span class="ql" style="margin:14px 0 8px;font-weight:500;font-size:15px">En pots ensenyar també un altre? (opcional)</span>
