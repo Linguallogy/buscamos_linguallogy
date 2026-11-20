@@ -44,7 +44,7 @@ function evaluate(c) {
   b.corporativo = { varios: W.corporativo, alguna: W.corporativo / 2 }[c.corporativo] || 0;
   const expOk = !(c.ele === "experiencia" && !["5-10", "10+"].includes(c.anos));
   b.formacion = expOk ? ({ master: W.ele, curso: W.ele * 0.6, grado: W.ele * 0.6, experiencia: W.ele * 0.6 }[c.ele] || 0) : 0;
-  b.enlaces = /^https?:\/\/\S+\.\S+/.test(str(c.enlaces)) ? W.enlaces : 0;
+  b.enlaces = (c.tieneCV || /^https?:\/\/\S+\.\S+/.test(str(c.enlaces))) ? W.enlaces : 0;
   b.anos = { "2-3": 2, "3-5": 5, "5-10": 10, "10+": W.anos }[c.anos] || 0;
   b.niveles = Math.min(W.niveles, arr(c.niveles).length);
   const main = c.idioma_ensena, bridge = main === "Inglés" ? "Español" : "Inglés";
@@ -75,6 +75,9 @@ const MAIL = {
   ca: { s: "Hem rebut la teva candidatura - Linguallogy", b: (n) => `Hola, ${n}:\n\nGràcies per la teva candidatura per col·laborar amb Linguallogy. La revisarem i et respondrem en qualsevol cas en els propers dies. Si el teu perfil encaixa amb els grups actuals, et proposarem una conversa de 15-20 minuts.\n\nSi tens qualsevol dubte, respon aquest correu.\n\nSalutacions,\nLinguallogy` },
 };
 
+// Claves nuevas de Supabase (sb_secret_...) van solo en "apikey"; las antiguas (JWT service_role) también en Authorization
+const sbAuth = (k) => (k.startsWith("sb_") ? { apikey: k } : { apikey: k, Authorization: `Bearer ${k}` });
+
 const json = (status, obj) => new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json" } });
 
 export default async (req) => {
@@ -85,6 +88,15 @@ export default async (req) => {
   const nombre = str(c.nombre, 120), email = str(c.email, 200).toLowerCase();
   if (!nombre || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || c.rgpd !== true) return json(400, { error: "invalid" });
 
+  // CV en PDF opcional (máx. 4 MB): se valida aquí y se sube a un bucket privado después de guardar la fila
+  let cvBuf = null;
+  if (c.cv && typeof c.cv.b64 === "string" && c.cv.b64.length < 6_000_000) {
+    try {
+      const b = Buffer.from(c.cv.b64, "base64");
+      if (b.length > 0 && b.length <= 4 * 1024 * 1024 && b.subarray(0, 5).toString("latin1") === "%PDF-") cvBuf = b;
+    } catch {}
+  }
+  c.tieneCV = !!cvBuf;
   const ev = evaluate(c);
   if (ev.ko.length) return json(422, { error: "requirements" }); // no se guarda nada
 
@@ -106,8 +118,7 @@ export default async (req) => {
   const SB_KEY = String(process.env.SUPABASE_SERVICE_KEY || "").trim();
   if (!SB_URL || !SB_KEY) { console.error("config: falta SUPABASE_URL o SUPABASE_SERVICE_KEY"); return json(500, { error: "config" }); }
   // Claves nuevas de Supabase (sb_secret_...) van solo en "apikey"; las antiguas (JWT service_role) también en Authorization
-  const sbHeaders = { apikey: SB_KEY, "Content-Type": "application/json", Prefer: "return=representation" };
-  if (!SB_KEY.startsWith("sb_")) sbHeaders.Authorization = `Bearer ${SB_KEY}`;
+  const sbHeaders = { ...sbAuth(SB_KEY), "Content-Type": "application/json", Prefer: "return=representation" };
 
   let ins;
   try {
@@ -120,6 +131,20 @@ export default async (req) => {
     return json(500, { error: "store", status: ins.status });
   }
   const [saved] = await ins.json();
+
+  if (cvBuf) {
+    try {
+      const path = `${saved.id}.pdf`;
+      const up = await fetch(`${SB_URL}/storage/v1/object/cv/${path}`, {
+        method: "POST", headers: { ...sbAuth(SB_KEY), "Content-Type": "application/pdf", "x-upsert": "true" }, body: cvBuf,
+      });
+      if (up.ok) {
+        await fetch(`${SB_URL}/rest/v1/candidaturas?id=eq.${saved.id}`, {
+          method: "PATCH", headers: { ...sbAuth(SB_KEY), "Content-Type": "application/json" }, body: JSON.stringify({ cv_path: path }),
+        });
+      } else console.error("cv", up.status, (await up.text()).slice(0, 200));
+    } catch (e) { console.error("cv", String(e).slice(0, 200)); }
+  }
 
   // Telegram: solo número y puntuación (así lo dice el texto de privacidad)
   try {

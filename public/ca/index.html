@@ -190,6 +190,9 @@ details.en p{color:var(--ink2);margin-top:10px;max-width:46em}
 .opt{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:14px;padding:10px 14px;cursor:pointer;background:#fff;font-size:16px;transition:border-color .12s,background .12s}
 .opt:hover{border-color:var(--c-sky)}
 .q > label.opt{display:flex;align-items:flex-start;font-weight:400;margin:0 0 8px}
+.q > label.cvbtn{justify-content:center;border-style:dashed;font-weight:500;color:var(--blue-deep);position:relative}
+.q > label.cvbtn.has{border-style:solid;border-color:var(--mint);background:var(--t-mint);color:var(--ink)}
+.linkbtn{background:none;border:0;padding:2px 0;color:var(--blue-deep);text-decoration:underline;cursor:pointer;font:inherit;font-size:14px}
 .price-tag b span{font-size:inherit;font-weight:inherit}
 .price-tag > span span{font-size:inherit;font-weight:600}
 .opt input{accent-color:var(--blue-deep);width:18px;height:18px;margin:0;flex:none}
@@ -741,9 +744,11 @@ svg.ico{width:56px;height:56px;flex:none}
           <textarea id="situacion" name="situacion" maxlength="900" placeholder="Escriu aquí..."></textarea>
         </div>
         <div class="q">
-          <label for="enlaces">Enllaços que vulguis compartir (opcional, ens ajuden a valorar el teu perfil)</label>
-          <p class="hint">LinkedIn, el teu web o un enllaç al teu CV (Google Drive, Dropbox...).</p>
-          <input type="text" id="enlaces" name="enlaces" placeholder="https://...">
+          <label for="enlaces">El teu CV o el teu perfil (opcional, ens ajuda a valorar la teva candidatura)</label>
+          <p class="hint">Adjunta el teu CV en PDF o enganxa un enllaç: LinkedIn, el teu web, Google Drive...</p>
+          <label class="opt cvbtn" id="cvlabel"><input type="file" id="cv" accept="application/pdf,.pdf" style="position:absolute;opacity:0;width:1px;height:1px"><span id="cvtxt">Adjunta el CV (PDF, màx. 4 MB)</span></label>
+          <button type="button" class="linkbtn" id="cvquitar" hidden>Treu el fitxer</button>
+          <input type="text" id="enlaces" name="enlaces" placeholder="https://..." style="margin-top:10px">
         </div>
         <div class="err" id="err3" aria-live="polite"></div>
       </fieldset>
@@ -811,7 +816,7 @@ svg.ico{width:56px;height:56px;flex:none}
   <h3>Responsable del tractament</h3>
   <p>El titular del lloc indicat a dalt.</p>
   <h3>Quines dades demanem</h3>
-  <p>Només les necessàries per valorar la teva candidatura: el teu nom, un contacte, les teves respostes sobre formació, experiència i disponibilitat i, si els envies, els enllaços al teu perfil. No demanem cognoms, documents d'identitat ni dades sensibles. Si una resposta no compleix els requisits, no es desa cap dada.</p>
+  <p>Només les necessàries per valorar la teva candidatura: el teu nom, un contacte, les teves respostes sobre formació, experiència i disponibilitat i, si els envies, el teu CV i els enllaços al teu perfil. No demanem cognoms, documents d'identitat ni dades sensibles. Si una resposta no compleix els requisits, no es desa cap dada.</p>
   <h3>Finalitat i base jurídica</h3>
   <p>Per valorar la teva candidatura, a petició teva (mesures precontractuals, art. 6.1.b RGPD). Les preguntes obligatòries són necessàries per valorar-la; sense aquestes respostes no la podem tramitar. Si marques la casella per conservar la teva candidatura, conservem la teva candidatura per a futurs grups amb el teu consentiment (art. 6.1.a), que pots retirar escrivint a info@linguallogy.com.</p>
   <h3>Requisits i puntuació</h3>
@@ -1013,7 +1018,7 @@ function score(){
   b["Otros alumnos/clientes"] = {regular:W.clientes, algunos:W.clientes/2, no:0}[val("clientes")]||0;
   b["Grupos de empresa"] = {varios:W.corporativo, alguna:W.corporativo/2, no:0}[val("corporativo")]||0;
   b["Formación como profesor/a"] = (val("ele")==="experiencia" && !["5-10","10+"].includes(val("anos"))) ? 0 : ({master:W.ele, curso:W.ele*0.6, grado:W.ele*0.6, experiencia:W.ele*0.6}[val("ele")]||0);
-  b["Enlaces (LinkedIn, CV...)"] = /^https?:\/\/\S+\.\S+/.test(txt("enlaces")) ? W.enlaces : 0;
+  b["Enlaces (LinkedIn, CV...)"] = (cvFile || /^https?:\/\/\S+\.\S+/.test(txt("enlaces"))) ? W.enlaces : 0;
   b["Años de experiencia"] = {"2-3":2,"3-5":5,"5-10":10,"10+":W.anos}[val("anos")]||0;
   b["Niveles enseñados ("+vals("niveles").length+")"] = Math.min(W.niveles, vals("niveles").length);
   const main = val("idioma_ensena"), bridge = main==="Inglés" ? "Español" : "Inglés";   // idioma puente más útil con los alumnos
@@ -1028,7 +1033,7 @@ function score(){
   let total = Object.values(b).reduce((a,c)=>a+c,0);
   const flags = [];
   if(possibleClasses()===0){ flags.push("Solo fin de semana"); total = Math.min(total, 59); }   // los grupos de empresa son entre semana
-  if(val("corporativo")==="varios" && !/^https?:\/\/\S+\.\S+/.test(txt("enlaces"))) flags.push("Varios grupos de empresa sin enlaces");
+  if(val("corporativo")==="varios" && !cvFile && !/^https?:\/\/\S+\.\S+/.test(txt("enlaces"))) flags.push("Varios grupos de empresa sin enlaces");
   if(val("ele")==="experiencia" && !["5-10","10+"].includes(val("anos"))) flags.push("Formación por experiencia sin 5+ años");
   if(val("corporativo")==="varios" && ["lt2","2-3"].includes(val("anos"))) flags.push("Muchos grupos de empresa con poca experiencia");
   if(val("clientes")==="no" && ["6-8","8+"].includes(val("volumen"))) flags.push("Sin otros clientes y mucho volumen (revisar dependencia)");
@@ -1095,9 +1100,36 @@ function rejectScreen(){
   document.getElementById("revisar").addEventListener("click", unfinish);
 }
 
+
+// CV en PDF (opcional): se lee al enviar y va a la función, que lo guarda en un bucket privado
+let cvFile = null;
+const CV_MAX = 4*1024*1024;
+function setCV(f){
+  cvFile = f;
+  const l = document.getElementById("cvlabel"), t = document.getElementById("cvtxt");
+  l.classList.toggle("has", !!f);
+  t.textContent = f ? "✓ " + f.name : "Adjunta el CV (PDF, màx. 4 MB)";
+  document.getElementById("cvquitar").hidden = !f;
+  if(!f) document.getElementById("cv").value = "";
+  document.getElementById("err3").classList.remove("show");
+}
+document.getElementById("cv").addEventListener("change", e=>{
+  e.stopPropagation();   // que el manejador general del formulario no borre el aviso
+  const f = e.target.files[0];
+  if(!f){ setCV(null); return; }
+  if(!/\.pdf$/i.test(f.name) && f.type!=="application/pdf"){ setCV(null); err(2,"El CV ha de ser en PDF."); return; }
+  if(f.size > CV_MAX){ setCV(null); err(2,"El PDF pesa més de 4 MB. Prova de comprimir-lo o enganxa un enllaç."); return; }
+  setCV(f);
+});
+document.getElementById("cvquitar").addEventListener("click", ()=>setCV(null));
+function readCV(){
+  return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(String(r.result).split(",")[1]); r.onerror=rej; r.readAsDataURL(cvFile); });
+}
+
 async function submit(){
   const btn = document.getElementById("next"); btn.disabled = true; btn.textContent = "Enviant...";
   const data = payload(); const s = score();
+  if(cvFile){ try{ data.cv = { name: cvFile.name.slice(0,120), b64: await readCV() }; }catch(e){} }
   let ok = true;
   if(CONFIG.endpoint){
     try{

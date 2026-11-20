@@ -40,7 +40,8 @@ create table if not exists public.candidaturas (
   enlaces         text,
   fuente          text,
   bolsa           boolean not null default false,
-  notas           text                               -- notas internas de Ilya
+  notas           text,                              -- notas internas de Ilya
+  cv_path         text                               -- archivo en el bucket privado «cv»
 );
 
 -- Nadie entra desde el navegador: solo la función de Netlify con la service key.
@@ -53,7 +54,7 @@ select id, created_at, estado, score, modalidad, flags,
             when score >= 60 then 'leer situación'
             else 'ranking' end as revisar,
        nombre, email, contacto, idioma_ensena, nivel, ele, anos, zonas, clases_posibles, volumen,
-       tarifa, enlaces, situacion, comentario, bolsa
+       tarifa, enlaces, situacion, comentario, bolsa, cv_path
 from public.candidaturas
 order by score desc, created_at desc;
 
@@ -63,6 +64,7 @@ select cron.schedule(
   'borrar-candidaturas-caducadas',
   '15 3 * * *',
   $$ delete from public.candidaturas
-     where (bolsa = false and created_at < now() - interval '3 months')
-        or (created_at < now() - interval '12 months') $$
+     where cv_path is null
+       and ((bolsa = false and created_at < now() - interval '3 months')
+        or (created_at < now() - interval '12 months')) $$
 );
