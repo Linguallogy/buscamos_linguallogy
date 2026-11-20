@@ -102,12 +102,23 @@ export default async (req) => {
     bolsa: c.bolsa === true, score: ev.total, modalidad: ev.modalidad, desglose: ev.breakdown, flags: ev.flags, estado: "nueva",
   };
 
-  const ins = await fetch(`${process.env.SUPABASE_URL}/rest/v1/candidaturas`, {
-    method: "POST",
-    headers: { apikey: process.env.SUPABASE_SERVICE_KEY, Authorization: `Bearer ${process.env.SUPABASE_SERVICE_KEY}`, "Content-Type": "application/json", Prefer: "return=representation" },
-    body: JSON.stringify(row),
-  });
-  if (!ins.ok) { console.error("supabase", ins.status); return json(500, { error: "store" }); } // sin datos personales en el log
+  const SB_URL = String(process.env.SUPABASE_URL || "").trim().replace(/\/+$/, "");
+  const SB_KEY = String(process.env.SUPABASE_SERVICE_KEY || "").trim();
+  if (!SB_URL || !SB_KEY) { console.error("config: falta SUPABASE_URL o SUPABASE_SERVICE_KEY"); return json(500, { error: "config" }); }
+  // Claves nuevas de Supabase (sb_secret_...) van solo en "apikey"; las antiguas (JWT service_role) también en Authorization
+  const sbHeaders = { apikey: SB_KEY, "Content-Type": "application/json", Prefer: "return=representation" };
+  if (!SB_KEY.startsWith("sb_")) sbHeaders.Authorization = `Bearer ${SB_KEY}`;
+
+  let ins;
+  try {
+    ins = await fetch(`${SB_URL}/rest/v1/candidaturas`, { method: "POST", headers: sbHeaders, body: JSON.stringify(row) });
+  } catch (e) { console.error("supabase: sin conexión", String(e).slice(0, 200)); return json(500, { error: "store" }); }
+  if (!ins.ok) {
+    // el cuerpo de error de Supabase describe el problema (columna, clave...), no contiene los datos enviados
+    const detail = (await ins.text()).slice(0, 300);
+    console.error("supabase", ins.status, detail);
+    return json(500, { error: "store", status: ins.status });
+  }
   const [saved] = await ins.json();
 
   // Telegram: solo número y puntuación (así lo dice el texto de privacidad)
