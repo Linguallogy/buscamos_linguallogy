@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Заявки преподавателей · Linguallogy</title>
+<link rel="icon" href="../img/favicon-b2b.png">
+<style>
+@font-face{font-family:"Golos Text";src:url(../fonts/golos-text-latin-400-normal.woff2) format("woff2");font-weight:400;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215}
+@font-face{font-family:"Golos Text";src:url(../fonts/golos-text-latin-500-normal.woff2) format("woff2");font-weight:500;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215}
+@font-face{font-family:"Golos Text";src:url(../fonts/golos-text-latin-600-normal.woff2) format("woff2");font-weight:600;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215}
+@font-face{font-family:"Golos Text";src:url(../fonts/golos-text-cyrillic-400-normal.woff2) format("woff2");font-weight:400;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Golos Text";src:url(../fonts/golos-text-cyrillic-500-normal.woff2) format("woff2");font-weight:500;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Golos Text";src:url(../fonts/golos-text-cyrillic-600-normal.woff2) format("woff2");font-weight:600;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Golos Text";src:url(../fonts/golos-text-cyrillic-700-normal.woff2) format("woff2");font-weight:700;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+:root{--ink:#16233b;--muted:#5d6b80;--line:#e3e8f0;--blue:#1679b5;--t-blue:#e7f6fd;--mint:#2f9e73;--t-mint:#e3f7ee;--amber:#b7791f;--t-amber:#fff4dc;--red:#c62b3f;--t-red:#fdecef;--grey:#8a96a8}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Golos Text",system-ui,sans-serif;color:var(--ink);background:#fff;font-size:15px}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1280px;margin:0 auto;padding:20px}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+header img{width:36px;height:36px}
+h1{font-size:22px;margin:0;font-weight:700}
+.count{color:var(--muted)}
+.right{margin-left:auto;display:flex;gap:8px}
+.btn{border:1.5px solid var(--ink);background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+a.btn{color:var(--ink)}
+.btn.primary,a.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.small{padding:5px 12px;font-size:14px;border-width:1.5px}
+.btn.ghost{border-color:var(--line)}
+.btn.danger{border-color:var(--red);color:var(--red)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.bar input[type=search]{flex:1 1 220px;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px}
+.bar select{border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.chip{border:1.5px solid var(--line);border-radius:999px;padding:5px 12px;background:#fff;cursor:pointer;font-size:14px}
+.chip.on{border-color:var(--blue);background:var(--t-blue);color:var(--blue);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;background:#fff;display:flex;flex-direction:column;gap:8px;transition:border-color .15s,box-shadow .15s}
+.card:hover{border-color:var(--blue);box-shadow:0 2px 0 var(--blue)}
+.card.st-descartada{opacity:.55}
+.top{display:flex;gap:10px;align-items:flex-start}
+.score{flex:none;width:50px;height:50px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:19px;background:#f1f3f7;color:var(--grey)}
+.score.g{background:var(--t-mint);color:var(--mint)}
+.score.a{background:var(--t-amber);color:var(--amber)}
+.name{font-weight:700;font-size:16px;line-height:1.2;word-break:break-word}
+.sub{color:var(--muted);font-size:13px;margin-top:2px}
+.lang{display:flex;align-items:center;gap:6px;font-weight:600}
+.flag{width:20px;height:15px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.12);object-fit:cover}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:12.5px;background:#f3f5f9;border-radius:6px;padding:3px 7px}
+.tag.blue{background:var(--t-blue);color:var(--blue)}
+.tag.mint{background:var(--t-mint);color:var(--mint)}
+.warn{font-size:13px;background:var(--t-amber);color:#7a5413;border-radius:8px;padding:6px 8px}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.st{font-size:12px;font-weight:600;border-radius:999px;padding:3px 9px;margin-left:auto;align-self:flex-start;white-space:nowrap}
+.st-nueva .st{background:var(--t-blue);color:var(--blue)}
+.st-llamar .st,.st-entrevista .st,.st-prueba .st{background:var(--t-amber);color:var(--amber)}
+.st-colabora .st{background:var(--t-mint);color:var(--mint)}
+.st-descartada .st{background:#eef0f4;color:var(--grey)}
+.empty{color:var(--muted);padding:40px 0;text-align:center}
+/* detalle */
+.ov{position:fixed;inset:0;background:rgba(22,35,59,.45);display:flex;justify-content:flex-end;z-index:10}
+.ov[hidden]{display:none}
+.panel{width:min(640px,100%);height:100%;background:#fff;overflow:auto;padding:22px 22px 40px}
+.panel h2{margin:0;font-size:22px}
+.kv{display:grid;grid-template-columns:200px 1fr;gap:0;margin:14px 0;border-top:1px solid var(--line)}
+.kv div{padding:8px 4px;border-bottom:1px solid var(--line);word-break:break-word}
+.kv div:nth-child(odd){color:var(--muted)}
+.stsel{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+textarea{width:100%;min-height:90px;border:1.5px solid var(--line);border-radius:10px;padding:10px}
+.saved{color:var(--mint);font-size:13px;margin-left:8px}
+.login{max-width:360px;margin:12vh auto;text-align:center}
+.login input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px;margin:14px 0 10px;font-size:16px}
+.err{color:var(--red);min-height:22px}
+@media (max-width:600px){.kv{grid-template-columns:1fr}.kv div:nth-child(odd){padding-bottom:0;border-bottom:0;font-size:13px}}
+</style>
+</head>
+<body>
+<div class="login" id="login">
+  <img src="../img/logo-b2b.png" alt="" style="width:64px">
+  <h1 style="margin-top:10px">Заявки преподавателей</h1>
+  <form id="lf"><input type="password" id="pw" placeholder="Пароль" autocomplete="current-password" autofocus>
+  <button class="btn primary" style="width:100%;justify-content:center">Войти</button></form>
+  <p class="err" id="lerr"></p>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <header>
+    <img src="../img/logo-b2b.png" alt="">
+    <h1>Заявки преподавателей</h1>
+    <span class="count" id="count"></span>
+    <div class="right"><button class="btn small ghost" id="reload">Обновить</button><button class="btn small ghost" id="logout">Выйти</button></div>
+  </header>
+  <div class="bar">
+    <input type="search" id="q" placeholder="Поиск: имя, email, страна, текст…">
+    <select id="fl"><option value="">Все языки</option><option value="Español">Испанский</option><option value="Inglés">Английский</option><option value="Catalán">Каталанский</option></select>
+    <select id="fm"><option value="">Любой формат</option><option value="oficina">Может в офис</option><option value="online">Только онлайн</option></select>
+    <select id="so"><option value="score">Сначала сильные</option><option value="date">Сначала новые</option></select>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="ov" id="ov" hidden><div class="panel" id="panel"></div></div>
+
+<script>
+const API = "/api/admin";
+const ESTADOS = [["nueva","Новая"],["llamar","Позвонить"],["entrevista","Разговор назначен"],["prueba","Пробное занятие"],["colabora","Работает с нами"],["descartada","Отказ"]];
+const EST = Object.fromEntries(ESTADOS);
+const T = {
+  idioma:{"Español":"Испанский","Inglés":"Английский","Catalán":"Каталанский"},
+  ele:{master:"Магистр (ELE/TESOL/MFP)",curso:"Курс для преподавателей",grado:"Филология + методика",experiencia:"Без диплома, 5+ лет опыта",ninguna:"Нет подготовки"},
+  anos:{lt2:"< 2 лет","2-3":"2-3 года","3-5":"3-5 лет","5-10":"5-10 лет","10+":"10+ лет"},
+  autonomo:{ya:"уже автономо",dispuesto:"оформится до начала",no:"нет"},
+  tarifa:{si:"ставки подходят",comentar:"хочет обсудить ставку",no:"не подходят"},
+  clientes:{regular:"регулярно",algunos:"немного",no:"нет"},
+  corporativo:{varios:"много",alguna:"иногда",no:"нет"},
+  modalidad:{oficina:"Офис","oficina+online":"Офис + онлайн",online:"Только онлайн"},
+  fuente:{linkedin:"LinkedIn",portal_profes:"портал для преподавателей",portal_general:"InfoJobs/другой портал",redes:"соцсети",recomendacion:"рекомендация",otro:"другое"},
+};
+const FLAG = {"España":"es","México":"mx","Argentina":"ar","Colombia":"co","Venezuela":"ve","Chile":"cl","Perú":"pe","Cuba":"cu","Uruguay":"uy","Ecuador":"ec","Reino Unido":"gb","Estados Unidos":"us","Irlanda":"ie","Australia":"au","Nueva Zelanda":"nz","Sudáfrica":"za","Canadá":"ca"};
+const FL = {"Solo fin de semana":"Только выходные","Formación por experiencia sin 5+ años":"Нет диплома и меньше 5 лет опыта","Muchos grupos de empresa con poca experiencia":"Много групп в компаниях при малом опыте","Varios grupos de empresa sin enlaces":"Много групп в компаниях, но без CV/ссылок","Sin otros clientes y mucho volumen (revisar dependencia)":"Нет других клиентов и много часов (риск зависимости, TRADE)","Quiere comentar la tarifa":"Хочет обсудить ставку"};
+const flags = r => (r.flags||[]).map(f => FL[f]||f).join("; ");
+const DIAS = ["","Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
+const t = (k,v) => (T[k]&&T[k][v]) || v || "-";
+const esc = x => String(x ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $ = id => document.getElementById(id);
+
+let PW = "", ROWS = [], estF = "";
+try { PW = sessionStorage.getItem("lgpw") || ""; } catch(e) {}
+
+async function api(body){
+  const r = await fetch(API, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({password:PW, ...body})});
+  const j = await r.json().catch(()=>({}));
+  if(!r.ok) throw Object.assign(new Error(j.error||r.status), {status:r.status});
+  return j;
+}
+async function load(){
+  try{
+    const j = await api({action:"list"});
+    ROWS = j.rows || [];
+    $("login").hidden = true; $("app").hidden = false;
+    render(); openHash();
+  }catch(e){
+    $("app").hidden = true; $("login").hidden = false;
+    $("lerr").textContent = e.status===401 ? "Неверный пароль" : (PW ? "Ошибка: "+e.message : "");
+    try{ if(e.status===401) sessionStorage.removeItem("lgpw"); }catch(_){}
+  }
+}
+$("lf").addEventListener("submit", e => { e.preventDefault(); PW = $("pw").value; try{ sessionStorage.setItem("lgpw", PW); }catch(_){} load(); });
+$("logout").onclick = () => { PW=""; try{ sessionStorage.removeItem("lgpw"); }catch(_){} location.hash=""; $("app").hidden=true; $("login").hidden=false; };
+$("reload").onclick = load;
+["q","fl","fm","so"].forEach(id => $(id).addEventListener("input", render));
+
+function horario(d){
+  const by = {}; (d||[]).forEach(x => (by[x.dia] = by[x.dia] || []).push(`${x.de}-${x.a}`));
+  return Object.keys(by).sort().map(k => `${DIAS[k]||k} ${by[k].join(", ")}`).join(" · ") || "-";
+}
+function scoreCls(s){ return s>=70 ? "g" : s>=60 ? "a" : ""; }
+function langHtml(r){
+  const f = FLAG[r.variedad];
+  return `<span class="lang">${f?`<img class="flag" src="../img/flags/${f}.svg" alt="">`:""}${esc(t("idioma",r.idioma_ensena))}${r.variedad?` <span class="sub" style="margin:0">· ${esc(r.variedad)}</span>`:""}</span>`;
+}
+function fecha(s){ const d=new Date(s); return d.toLocaleDateString("ru-RU",{day:"numeric",month:"short"})+" "+d.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"}); }
+
+function filtered(){
+  const q = $("q").value.trim().toLowerCase(), fl=$("fl").value, fm=$("fm").value;
+  let r = ROWS.filter(x => (!estF || (x.estado||"nueva")===estF) && (!fl || x.idioma_ensena===fl) &&
+    (!fm || (fm==="online" ? x.modalidad==="online" : x.modalidad && x.modalidad!=="online")) &&
+    (!q || JSON.stringify(x).toLowerCase().includes(q)));
+  r.sort($("so").value==="date" ? (a,b)=>b.created_at.localeCompare(a.created_at) : (a,b)=>b.score-a.score || b.created_at.localeCompare(a.created_at));
+  return r;
+}
+function render(){
+  const counts = {}; ROWS.forEach(x => counts[x.estado||"nueva"] = (counts[x.estado||"nueva"]||0)+1);
+  $("chips").innerHTML = `<button class="chip ${estF?"":"on"}" data-e="">Все (${ROWS.length})</button>` +
+    ESTADOS.map(([k,v]) => `<button class="chip ${estF===k?"on":""}" data-e="${k}">${v} (${counts[k]||0})</button>`).join("");
+  $("chips").querySelectorAll(".chip").forEach(c => c.onclick = () => { estF = c.dataset.e; render(); });
+  const list = filtered();
+  $("count").textContent = `${list.length} из ${ROWS.length}`;
+  $("grid").innerHTML = list.length ? list.map(card).join("") : `<p class="empty">Заявок нет</p>`;
+  $("grid").querySelectorAll(".card").forEach(c => c.addEventListener("click", e => { if(e.target.closest("a,button")) return; location.hash = c.dataset.id; }));
+}
+function card(r){
+  const est = r.estado || "nueva";
+  return `<div class="card st-${est}" data-id="${r.id}">
+    <div class="top"><div class="score ${scoreCls(r.score)}">${r.score}</div>
+      <div style="min-width:0"><div class="name">${esc(r.nombre)}</div><div class="sub">#${r.id} · ${fecha(r.created_at)}</div></div>
+      <span class="st">${EST[est]||est}</span></div>
+    ${langHtml(r)}
+    <div class="tags"><span class="tag">${esc(r.nivel==="C2"?"C2/носитель":r.nivel)}</span><span class="tag">${esc(t("ele",r.ele))}</span><span class="tag">${esc(t("anos",r.anos))}</span>
+      <span class="tag blue">${esc(t("modalidad",r.modalidad))}</span><span class="tag">${r.clases_posibles??0} зан. в будни</span></div>
+    ${(r.flags||[]).length ? `<div class="warn">⚠ ${esc(flags(r))}</div>` : ""}
+    <div class="actions">
+      ${r.cv_url ? `<a class="btn small primary" href="${esc(r.cv_url)}" target="_blank" rel="noopener">CV</a>` : ""}
+      ${r.enlaces ? `<a class="btn small ghost" href="${esc(/^https?:/i.test(r.enlaces)?r.enlaces:"https://"+r.enlaces)}" target="_blank" rel="noopener">Ссылка</a>` : ""}
+      <a class="btn small ghost" href="mailto:${esc(r.email)}">Написать</a>
+    </div></div>`;
+}
+
+function openHash(){
+  const id = Number(location.hash.slice(1));
+  const r = ROWS.find(x => x.id===id);
+  if(!r){ $("ov").hidden = true; return; }
+  const est = r.estado || "nueva";
+  const rows = [
+    ["Email", `<a href="mailto:${esc(r.email)}">${esc(r.email)}</a>`], ["Телефон / контакт", esc(r.contacto)],
+    ["Язык", langHtml(r)], ["Ещё может преподавать", esc((r.idioma_extra||[]).map(x=>t("idioma",x)).join(", "))],
+    ["Уровень", esc(r.nivel)], ["Подготовка", esc(t("ele",r.ele))], ["Опыт", esc(t("anos",r.anos))],
+    ["Экзаменатор DELE", r.dele==="si"?"да":"нет"], ["Уровни, которые ведёт", esc((r.niveles||[]).join(", "))],
+    ["Формат", esc(t("modalidad",r.modalidad))], ["Районы", esc((r.zonas||[]).join(", "))],
+    ["Доступность", esc(horario(r.disponibilidad))], ["Возможно занятий в будни (90 мин)", r.clases_posibles??"-"], ["Хочет занятий в неделю", esc(r.volumen)],
+    ["Свои клиенты", esc(t("clientes",r.clientes))], ["Группы в компаниях", esc(t("corporativo",r.corporativo))],
+    ["Онлайн", r.online==="si"?"да":"нет"], ["Инструменты", esc((r.tools||[]).join(", "))],
+    ["Другие языки", esc([...(r.idiomas||[]), r.idiomas_otros].filter(Boolean).join(", "))],
+    ["Частные ученики", r.b2c==="si" ? (r.b2c_tarifa ? `да, ${esc(r.b2c_tarifa)} €` : "да, ставку обсудить") : "нет"],
+    ["Автономо", esc(t("autonomo",r.autonomo))], ["Ставки", esc(t("tarifa",r.tarifa))],
+    ["Ссылки", r.enlaces ? `<a href="${esc(/^https?:/i.test(r.enlaces)?r.enlaces:"https://"+r.enlaces)}" target="_blank" rel="noopener">${esc(r.enlaces)}</a>` : "-"],
+    ["Комментарий", esc(r.comentario) || "-"], ["Откуда узнал(а)", esc(t("fuente",r.fuente))],
+    ["Хранить", r.bolsa ? "12 месяцев (согласие на базу)" : "3 месяца"], ["Язык анкеты", esc(r.lang_form)],
+    ["Баллы", esc(Object.entries(r.desglose||{}).map(([k,v])=>`${k}: ${v}`).join(" · "))],
+  ];
+  $("panel").innerHTML = `
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="score ${scoreCls(r.score)}">${r.score}</div>
+      <div style="min-width:0"><h2>${esc(r.nombre)}</h2><div class="sub">#${r.id} · ${fecha(r.created_at)}</div></div>
+      <button class="btn small ghost" style="margin-left:auto" id="close">Закрыть</button>
+    </div>
+    ${(r.flags||[]).length ? `<div class="warn" style="margin-top:12px">⚠ ${esc(flags(r))}</div>` : ""}
+    <div class="actions" style="margin-top:12px">
+      ${r.cv_url ? `<a class="btn small primary" href="${esc(r.cv_url)}" target="_blank" rel="noopener">Открыть CV</a>` : `<span class="sub">CV не приложено</span>`}
+      <a class="btn small ghost" href="mailto:${esc(r.email)}">Написать</a>
+    </div>
+    <div class="stsel">${ESTADOS.map(([k,v]) => `<button class="chip ${est===k?"on":""}" data-st="${k}">${v}</button>`).join("")}</div>
+    <label style="font-weight:600">Заметки <span class="saved" id="saved"></span></label>
+    <textarea id="notas" placeholder="Что обсудили, когда позвонить…">${esc(r.notas||"")}</textarea>
+    <div class="kv">${rows.map(([k,v]) => `<div>${k}</div><div>${v||"-"}</div>`).join("")}</div>
+    <div id="delbox"><button class="btn small danger" id="del">Удалить заявку</button></div>`;
+  $("ov").hidden = false;
+  $("close").onclick = () => { history.replaceState(null,"",location.pathname); $("ov").hidden = true; };
+  $("panel").querySelectorAll("[data-st]").forEach(b => b.onclick = async () => {
+    try{ await api({action:"update", id:r.id, estado:b.dataset.st}); r.estado = b.dataset.st; render(); openHash(); }catch(e){ alertMsg("Не сохранилось: "+e.message); }
+  });
+  $("notas").addEventListener("blur", async e => {
+    if(e.target.value === (r.notas||"")) return;
+    try{ await api({action:"update", id:r.id, notas:e.target.value}); r.notas = e.target.value; $("saved").textContent = "сохранено"; }catch(err){ $("saved").textContent = "не сохранилось"; }
+  });
+  $("del").onclick = () => {
+    $("delbox").innerHTML = `<span style="margin-right:8px">Удалить заявку и CV навсегда?</span><button class="btn small danger" id="del2">Да, удалить</button> <button class="btn small ghost" id="del0">Нет</button>`;
+    $("del0").onclick = openHash;
+    $("del2").onclick = async () => { try{ await api({action:"delete", id:r.id}); ROWS = ROWS.filter(x=>x.id!==r.id); history.replaceState(null,"",location.pathname); $("ov").hidden = true; render(); }catch(e){ alertMsg("Не удалилось: "+e.message); } };
+  };
+}
+function alertMsg(m){ const s=$("saved"); if(s) s.textContent = m; }
+$("ov").addEventListener("click", e => { if(e.target.id==="ov"){ history.replaceState(null,"",location.pathname); $("ov").hidden = true; } });
+document.addEventListener("keydown", e => { if(e.key==="Escape" && !$("ov").hidden){ history.replaceState(null,"",location.pathname); $("ov").hidden = true; } });
+window.addEventListener("hashchange", openHash);
+if(PW) load();
+</script>
+</body>
+</html>

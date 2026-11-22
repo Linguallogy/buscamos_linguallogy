@@ -88,6 +88,7 @@ const T = {
   modalidad: { oficina: "только офис", online: "только онлайн", "oficina+online": "офис и онлайн" },
   fuente: { linkedin: "LinkedIn", portal_profes: "портал для преподавателей", portal_general: "InfoJobs/другой портал", redes: "соцсети", recomendacion: "рекомендация", otro: "другое" },
 };
+const FLR = { "Solo fin de semana": "только выходные", "Formación por experiencia sin 5+ años": "нет диплома и меньше 5 лет опыта", "Muchos grupos de empresa con poca experiencia": "много групп в компаниях при малом опыте", "Varios grupos de empresa sin enlaces": "много групп в компаниях, но без CV/ссылок", "Sin otros clientes y mucho volumen (revisar dependencia)": "нет других клиентов и много часов (риск TRADE)", "Quiere comentar la tarifa": "хочет обсудить ставку" };
 const DIAS = ["", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 const esc = (x) => String(x ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const t = (k, v) => (T[k] && T[k][v]) || v || "-";
@@ -109,8 +110,9 @@ function resumen(row, ev, id) {
     `${t("autonomo", row.autonomo)} · ${t("tarifa", row.tarifa)}${row.dele === "si" ? " · экзаменатор DELE" : ""}`,
     `CV: ${row.cv_path || ev.cvOk ? "есть" : "нет"} · ссылка: ${row.enlaces ? "есть" : "нет"}${extra ? ` · ещё может: ${extra}` : ""}`,
   ];
-  const avisos = ev.flags.length ? `\n⚠ ${ev.flags.join("; ")}` : "";
-  const telegram = `${mark}\nКандидат #${id}: ${ev.total}/100\n${lineas.join("\n")}${avisos}\n\nПолная заявка - на info@`;
+  const fl = ev.flags.map((f) => FLR[f] || f).join("; ");
+  const avisos = ev.flags.length ? `\n⚠ ${fl}` : "";
+  const telegram = `${mark}\nКандидат #${id}: ${ev.total}/100\n${lineas.join("\n")}${avisos}\n\nОткрыть заявку: https://buscamos.linguallogy.com/admin/#${id}`;
 
   const filas = [
     ["Имя", row.nombre], ["Email", row.email], ["Телефон/контакт", row.contacto],
@@ -130,10 +132,11 @@ function resumen(row, ev, id) {
   const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#16233b">
 <h2 style="margin:0 0 4px">Кандидат #${id}: ${ev.total}/100 · ${esc(mark)}</h2>
 <p style="margin:0 0 12px;color:#555">${esc(lineas[0])}</p>
-${ev.flags.length ? `<p style="background:#fff4e5;padding:8px 10px;border-radius:6px">⚠ ${esc(ev.flags.join("; "))}</p>` : ""}
+${ev.flags.length ? `<p style="background:#fff4e5;padding:8px 10px;border-radius:6px">⚠ ${esc(fl)}</p>` : ""}
 <table cellpadding="6" style="border-collapse:collapse">${filas.filter(([, v]) => v !== undefined && v !== null && v !== "")
     .map(([k, v]) => `<tr><td style="color:#666;vertical-align:top;border-bottom:1px solid #eee">${esc(k)}</td><td style="border-bottom:1px solid #eee">${esc(v)}</td></tr>`).join("")}</table>
 <p style="color:#888;font-size:12px;margin-top:14px">Баллы: ${esc(desg)}</p>
+<p><a href="https://buscamos.linguallogy.com/admin/#${id}" style="color:#1679b5;font-weight:bold">Открыть заявку в панели</a></p>
 <p style="color:#888;font-size:12px">Чтобы ответить кандидату, просто нажми «Ответить»: письмо уйдёт на его адрес.</p></div>`;
   const texto = `Кандидат #${id}: ${ev.total}/100\n\n` + filas.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join("\n") + `\n\nБаллы: ${desg}`;
   const asunto = `Кандидат #${id} · ${ev.total}/100 · ${lengua} · ${row.nombre}`;
