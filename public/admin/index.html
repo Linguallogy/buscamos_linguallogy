@@ -52,6 +52,8 @@ a.btn{color:var(--ink)}
 .tag{font-size:12.5px;background:#f3f5f9;border-radius:6px;padding:3px 7px}
 .tag.blue{background:var(--t-blue);color:var(--blue)}
 .tag.mint{background:var(--t-mint);color:var(--mint)}
+.msg{font-size:14px;background:#f3f5f9;border-left:3px solid var(--blue);border-radius:6px;padding:7px 9px;white-space:pre-wrap;word-break:break-word}
+.card .msg{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4;max-height:calc(4.2em + 14px)}
 .warn{font-size:13px;background:var(--t-amber);color:#7a5413;border-radius:8px;padding:6px 8px}
 .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
 .st{font-size:12px;font-weight:600;border-radius:999px;padding:3px 9px;margin-left:auto;align-self:flex-start;white-space:nowrap}
@@ -193,6 +195,7 @@ function card(r){
     <div class="tags"><span class="tag">${esc(r.nivel==="C2"?"C2/носитель":r.nivel)}</span><span class="tag">${esc(t("ele",r.ele))}</span><span class="tag">${esc(t("anos",r.anos))}</span>
       <span class="tag blue">${esc(t("modalidad",r.modalidad))}</span><span class="tag">${r.clases_posibles??0} зан. в будни</span></div>
     ${(r.flags||[]).length ? `<div class="warn">⚠ ${esc(flags(r))}</div>` : ""}
+    ${r.comentario ? `<div class="msg">💬 ${esc(r.comentario)}</div>` : ""}
     <div class="actions">
       ${r.cv_url ? `<a class="btn small primary" href="${esc(r.cv_url)}" target="_blank" rel="noopener">CV</a>` : ""}
       ${r.enlaces ? `<a class="btn small ghost" href="${esc(/^https?:/i.test(r.enlaces)?r.enlaces:"https://"+r.enlaces)}" target="_blank" rel="noopener">Ссылка</a>` : ""}
@@ -218,7 +221,7 @@ function openHash(){
     ["Частные ученики", r.b2c==="si" ? (r.b2c_tarifa ? `да, ${esc(r.b2c_tarifa)} €` : "да, ставку обсудить") : "нет"],
     ["Автономо", esc(t("autonomo",r.autonomo))], ["Ставки", esc(t("tarifa",r.tarifa))],
     ["Ссылки", r.enlaces ? `<a href="${esc(/^https?:/i.test(r.enlaces)?r.enlaces:"https://"+r.enlaces)}" target="_blank" rel="noopener">${esc(r.enlaces)}</a>` : "-"],
-    ["Комментарий", esc(r.comentario) || "-"], ["Откуда узнал(а)", esc(t("fuente",r.fuente))],
+    ["Откуда узнал(а)", esc(t("fuente",r.fuente))],
     ["Хранить", r.bolsa ? "12 месяцев (согласие на базу)" : "3 месяца"], ["Язык анкеты", esc(r.lang_form)],
     ["Баллы", esc(Object.entries(r.desglose||{}).map(([k,v])=>`${k}: ${v}`).join(" · "))],
   ];
@@ -229,6 +232,7 @@ function openHash(){
       <button class="btn small ghost" style="margin-left:auto" id="close">Закрыть</button>
     </div>
     ${(r.flags||[]).length ? `<div class="warn" style="margin-top:12px">⚠ ${esc(flags(r))}</div>` : ""}
+    ${r.comentario ? `<div style="margin-top:12px"><div style="font-weight:600;margin-bottom:4px">Сообщение от кандидата</div><div class="msg">${esc(r.comentario)}</div></div>` : ""}
     <div class="actions" style="margin-top:12px">
       ${r.cv_url ? `<a class="btn small primary" href="${esc(r.cv_url)}" target="_blank" rel="noopener">Открыть CV</a>` : `<span class="sub">CV не приложено</span>`}
       <a class="btn small ghost" href="mailto:${esc(r.email)}">Написать</a>

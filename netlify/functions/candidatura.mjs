@@ -108,7 +108,7 @@ function resumen(row, ev, id) {
     `${t("modalidad", row.modalidad)} · возможно в будни: ${row.clases_posibles} зан. по 90 мин · хочет: ${row.volumen || "-"}`,
     `${t("clientes", row.clientes)} · ${t("corporativo", row.corporativo)}`,
     `${t("autonomo", row.autonomo)} · ${t("tarifa", row.tarifa)}${row.dele === "si" ? " · экзаменатор DELE" : ""}`,
-    `CV: ${row.cv_path || ev.cvOk ? "есть" : "нет"} · ссылка: ${row.enlaces ? "есть" : "нет"}${extra ? ` · ещё может: ${extra}` : ""}`,
+    `CV: ${row.cv_path || ev.cvOk ? "есть" : "нет"} · ссылка: ${row.enlaces ? "есть" : "нет"}${extra ? ` · ещё может: ${extra}` : ""}${row.comentario ? " · 💬 есть сообщение" : ""}`,
   ];
   const fl = ev.flags.map((f) => FLR[f] || f).join("; ");
   const avisos = ev.flags.length ? `\n⚠ ${fl}` : "";
@@ -133,6 +133,7 @@ function resumen(row, ev, id) {
 <h2 style="margin:0 0 4px">Кандидат #${id}: ${ev.total}/100 · ${esc(mark)}</h2>
 <p style="margin:0 0 12px;color:#555">${esc(lineas[0])}</p>
 ${ev.flags.length ? `<p style="background:#fff4e5;padding:8px 10px;border-radius:6px">⚠ ${esc(fl)}</p>` : ""}
+${row.comentario ? `<p style="background:#f3f5f9;border-left:3px solid #1679b5;padding:8px 10px;border-radius:6px;white-space:pre-wrap"><b>Сообщение от кандидата:</b><br>${esc(row.comentario)}</p>` : ""}
 <table cellpadding="6" style="border-collapse:collapse">${filas.filter(([, v]) => v !== undefined && v !== null && v !== "")
     .map(([k, v]) => `<tr><td style="color:#666;vertical-align:top;border-bottom:1px solid #eee">${esc(k)}</td><td style="border-bottom:1px solid #eee">${esc(v)}</td></tr>`).join("")}</table>
 <p style="color:#888;font-size:12px;margin-top:14px">Баллы: ${esc(desg)}</p>
