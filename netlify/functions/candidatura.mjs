@@ -75,6 +75,71 @@ const MAIL = {
   ca: { s: "Hem rebut la teva candidatura - Linguallogy", b: (n) => `Hola, ${n}:\n\nGràcies per la teva candidatura per col·laborar amb Linguallogy. La revisarem i et respondrem en qualsevol cas en els propers dies. Si el teu perfil encaixa amb els grups actuals, et proposarem una conversa de 15-20 minuts.\n\nSi tens qualsevol dubte, respon aquest correu.\n\nSalutacions,\nLinguallogy` },
 };
 
+
+// ---------- Resumen legible (en ruso, para Ilya) ----------
+const T = {
+  ele: { master: "Магистр (ELE/TESOL/MFP)", curso: "Курс для преподавателей (ELE/CELTA/TEFL)", grado: "Филология + методика", experiencia: "Без диплома, 5+ лет опыта", ninguna: "Нет подготовки" },
+  anos: { lt2: "меньше 2 лет", "2-3": "2-3 года", "3-5": "3-5 лет", "5-10": "5-10 лет", "10+": "больше 10 лет" },
+  autonomo: { ya: "уже автономо", dispuesto: "оформится до начала", no: "нет" },
+  tarifa: { si: "ставки подходят", comentar: "хочет обсудить ставку", no: "ставки не подходят" },
+  clientes: { regular: "свои клиенты регулярно", algunos: "свои клиенты: немного", no: "своих клиентов нет" },
+  corporativo: { varios: "много групп в компаниях", alguna: "группы в компаниях иногда", no: "в компаниях не преподавал(а)" },
+  idioma: { "Español": "Испанский", "Inglés": "Английский", "Catalán": "Каталанский" },
+  modalidad: { oficina: "только офис", online: "только онлайн", "oficina+online": "офис и онлайн" },
+  fuente: { linkedin: "LinkedIn", portal_profes: "портал для преподавателей", portal_general: "InfoJobs/другой портал", redes: "соцсети", recomendacion: "рекомендация", otro: "другое" },
+};
+const DIAS = ["", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+const esc = (x) => String(x ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const t = (k, v) => (T[k] && T[k][v]) || v || "-";
+
+function horario(disp) {
+  const by = {};
+  for (const x of disp || []) (by[x.dia] = by[x.dia] || []).push(`${x.de}-${x.a}`);
+  return Object.keys(by).sort().map((d) => `${DIAS[d] || d} ${by[d].join(", ")}`).join("; ") || "-";
+}
+
+function resumen(row, ev, id) {
+  const mark = ev.total >= 70 ? "✅ звонить" : ev.total >= 60 ? "👀 посмотреть" : "· рейтинг";
+  const lengua = `${t("idioma", row.idioma_ensena)}${row.variedad ? ` (${row.variedad})` : ""}`;
+  const extra = (row.idioma_extra || []).map((x) => t("idioma", x)).join(", ");
+  const lineas = [
+    `${lengua} · ${row.nivel === "C2" ? "C2/носитель" : row.nivel} · ${t("ele", row.ele)} · ${t("anos", row.anos)}`,
+    `${t("modalidad", row.modalidad)} · возможно в будни: ${row.clases_posibles} зан. по 90 мин · хочет: ${row.volumen || "-"}`,
+    `${t("clientes", row.clientes)} · ${t("corporativo", row.corporativo)}`,
+    `${t("autonomo", row.autonomo)} · ${t("tarifa", row.tarifa)}${row.dele === "si" ? " · экзаменатор DELE" : ""}`,
+    `CV: ${row.cv_path || ev.cvOk ? "есть" : "нет"} · ссылка: ${row.enlaces ? "есть" : "нет"}${extra ? ` · ещё может: ${extra}` : ""}`,
+  ];
+  const avisos = ev.flags.length ? `\n⚠ ${ev.flags.join("; ")}` : "";
+  const telegram = `${mark}\nКандидат #${id}: ${ev.total}/100\n${lineas.join("\n")}${avisos}\n\nПолная заявка - на info@`;
+
+  const filas = [
+    ["Имя", row.nombre], ["Email", row.email], ["Телефон/контакт", row.contacto],
+    ["Язык", lengua], ["Ещё может преподавать", extra], ["Уровень", row.nivel], ["Подготовка", t("ele", row.ele)], ["Опыт", t("anos", row.anos)],
+    ["Экзаменатор DELE", row.dele === "si" ? "да" : "нет"], ["Уровни, которые ведёт", (row.niveles || []).join(", ")],
+    ["Формат", t("modalidad", row.modalidad)], ["Районы", (row.zonas || []).join(", ")],
+    ["Доступность", horario(row.disponibilidad)], ["Возможно занятий в будни (90 мин)", row.clases_posibles], ["Хочет занятий в неделю", row.volumen],
+    ["Свои клиенты", t("clientes", row.clientes)], ["Группы в компаниях", t("corporativo", row.corporativo)],
+    ["Онлайн", row.online === "si" ? "да" : "нет"], ["Инструменты", (row.tools || []).join(", ")],
+    ["Другие языки", [...(row.idiomas || []), row.idiomas_otros].filter(Boolean).join(", ")],
+    ["Частные ученики", row.b2c === "si" ? `да${row.b2c_tarifa ? `, ставка ${row.b2c_tarifa} €` : ", ставку обсудить"}` : "нет"],
+    ["Автономо", t("autonomo", row.autonomo)], ["Ставки", t("tarifa", row.tarifa)],
+    ["Ссылки", row.enlaces], ["Комментарий", row.comentario], ["Откуда узнал(а)", t("fuente", row.fuente)],
+    ["Хранить 12 месяцев", row.bolsa ? "да" : "нет (3 месяца)"], ["Язык анкеты", row.lang_form],
+  ];
+  const desg = Object.entries(ev.breakdown).map(([k, v]) => `${k}: ${v}`).join(" · ");
+  const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#16233b">
+<h2 style="margin:0 0 4px">Кандидат #${id}: ${ev.total}/100 · ${esc(mark)}</h2>
+<p style="margin:0 0 12px;color:#555">${esc(lineas[0])}</p>
+${ev.flags.length ? `<p style="background:#fff4e5;padding:8px 10px;border-radius:6px">⚠ ${esc(ev.flags.join("; "))}</p>` : ""}
+<table cellpadding="6" style="border-collapse:collapse">${filas.filter(([, v]) => v !== undefined && v !== null && v !== "")
+    .map(([k, v]) => `<tr><td style="color:#666;vertical-align:top;border-bottom:1px solid #eee">${esc(k)}</td><td style="border-bottom:1px solid #eee">${esc(v)}</td></tr>`).join("")}</table>
+<p style="color:#888;font-size:12px;margin-top:14px">Баллы: ${esc(desg)}</p>
+<p style="color:#888;font-size:12px">Чтобы ответить кандидату, просто нажми «Ответить»: письмо уйдёт на его адрес.</p></div>`;
+  const texto = `Кандидат #${id}: ${ev.total}/100\n\n` + filas.filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join("\n") + `\n\nБаллы: ${desg}`;
+  const asunto = `Кандидат #${id} · ${ev.total}/100 · ${lengua} · ${row.nombre}`;
+  return { telegram, html, texto, asunto };
+}
+
 // Claves nuevas de Supabase (sb_secret_...) van solo en "apikey"; las antiguas (JWT service_role) también en Authorization
 const sbAuth = (k) => (k.startsWith("sb_") ? { apikey: k } : { apikey: k, Authorization: `Bearer ${k}` });
 
@@ -98,6 +163,7 @@ export default async (req) => {
   }
   c.tieneCV = !!cvBuf;
   const ev = evaluate(c);
+  ev.cvOk = !!cvBuf;
   if (ev.ko.length) return json(422, { error: "requirements" }); // no se guarda nada
 
   const row = {
@@ -152,15 +218,29 @@ export default async (req) => {
     } catch (e) { console.error("cv", String(e).slice(0, 200)); }
   }
 
-  // Telegram: solo número y puntuación (así lo dice el texto de privacidad)
+  const R = resumen(row, ev, saved.id);
+
+  // Telegram: número, puntuación y resumen profesional, sin nombre ni datos de contacto
   try {
-    const mark = ev.total >= CFG.passThreshold ? "✅" : ev.total >= 60 ? "👀" : "·";
-    const txt = `${mark} Candidatura #${saved.id}: ${ev.total}/100${ev.flags.length ? ` (${ev.flags.length} aviso/s)` : ""}${process.env.ADMIN_URL ? `\n${process.env.ADMIN_URL}` : ""}`;
     await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text: txt, disable_web_page_preview: true }),
+      body: JSON.stringify({ chat_id: process.env.TELEGRAM_CHAT_ID, text: R.telegram, disable_web_page_preview: true }),
     });
   } catch (e) { console.error("telegram"); }
+
+  // Candidatura completa por email a info@ (con el CV adjunto)
+  try {
+    const r = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: process.env.MAIL_FROM, to: [process.env.MAIL_TO || "info@linguallogy.com"], reply_to: email,
+        subject: R.asunto, html: R.html, text: R.texto,
+        attachments: cvBuf ? [{ filename: `CV-${saved.id}.pdf`, content: cvBuf.toString("base64") }] : undefined,
+      }),
+    });
+    if (!r.ok) console.error("mail info", r.status, (await r.text()).slice(0, 200));
+  } catch (e) { console.error("mail info"); }
 
   // Acuse de recibo al candidato
   try {
