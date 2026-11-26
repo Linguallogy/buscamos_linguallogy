@@ -40,6 +40,18 @@ a.btn{color:var(--ink)}
 .card{border:1.5px solid var(--line);border-radius:14px;padding:14px 14px 12px;cursor:pointer;background:#fff;display:flex;flex-direction:column;gap:8px;transition:border-color .15s,box-shadow .15s}
 .card:hover{border-color:var(--blue);box-shadow:0 2px 0 var(--blue)}
 .card.st-descartada{opacity:.55}
+.card.t-top{border-left:6px solid var(--mint);background:#f7fcf9}
+.card.t-mid{border-left:6px solid #e0a63a;background:#fffcf4}
+.card.t-low{border-left:6px solid #c9d1dc}
+.rank{font-size:12px;font-weight:700;color:var(--muted);margin-right:4px}
+.tiers{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tier{border:1.5px solid var(--line);border-radius:10px;padding:7px 12px;background:#fff;cursor:pointer;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.tier i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.tier.on{border-color:var(--ink);box-shadow:0 2px 0 var(--ink)}
+.tpl{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 4px}
+.draft{border:1.5px solid var(--line);border-radius:12px;padding:12px;margin:8px 0 14px;background:#fafbfd}
+.draft input{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:8px;margin-bottom:8px;font-weight:600}
+.draft textarea{min-height:200px}
 .top{display:flex;gap:10px;align-items:flex-start}
 .score{flex:none;width:50px;height:50px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:19px;background:#f1f3f7;color:var(--grey)}
 .score.g{background:var(--t-mint);color:var(--mint)}
@@ -59,6 +71,8 @@ a.btn{color:var(--ink)}
 .st{font-size:12px;font-weight:600;border-radius:999px;padding:3px 9px;margin-left:auto;align-self:flex-start;white-space:nowrap}
 .st-nueva .st{background:var(--t-blue);color:var(--blue)}
 .st-llamar .st,.st-entrevista .st,.st-prueba .st{background:var(--t-amber);color:var(--amber)}
+.st-invitado .st{background:var(--t-blue);color:var(--blue)}
+.st-espera .st{background:#efedff;color:#5b4bb7}
 .st-colabora .st{background:var(--t-mint);color:var(--mint)}
 .st-descartada .st{background:#eef0f4;color:var(--grey)}
 .empty{color:var(--muted);padding:40px 0;text-align:center}
@@ -101,6 +115,7 @@ textarea{width:100%;min-height:90px;border:1.5px solid var(--line);border-radius
     <select id="fm"><option value="">Любой формат</option><option value="oficina">Может в офис</option><option value="online">Только онлайн</option></select>
     <select id="so"><option value="score">Сначала сильные</option><option value="date">Сначала новые</option></select>
   </div>
+  <div class="tiers" id="tiers"></div>
   <div class="chips" id="chips"></div>
   <div class="grid" id="grid"></div>
 </div>
@@ -109,7 +124,7 @@ textarea{width:100%;min-height:90px;border:1.5px solid var(--line);border-radius
 
 <script>
 const API = "/api/admin";
-const ESTADOS = [["nueva","Новая"],["llamar","Позвонить"],["entrevista","Разговор назначен"],["prueba","Пробное занятие"],["colabora","Работает с нами"],["descartada","Отказ"]];
+const ESTADOS = [["nueva","Новая"],["invitado","Приглашён"],["llamar","Позвонить"],["entrevista","Разговор назначен"],["prueba","Пробное занятие"],["colabora","Работает с нами"],["espera","В резерве"],["descartada","Отказ"]];
 const EST = Object.fromEntries(ESTADOS);
 const T = {
   idioma:{"Español":"Испанский","Inglés":"Английский","Catalán":"Каталанский"},
@@ -130,7 +145,9 @@ const t = (k,v) => (T[k]&&T[k][v]) || v || "-";
 const esc = x => String(x ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const $ = id => document.getElementById(id);
 
-let PW = "", ROWS = [], estF = "";
+let PW = "", ROWS = [], estF = "", tierF = "";
+const tierOf = s => s>=70 ? "top" : s>=60 ? "mid" : "low";
+const TIERS = [["top","Лучшие · 70+","var(--mint)"],["mid","Возможно · 60-69","#e0a63a"],["low","Остальные · до 60","#c9d1dc"]];
 try { PW = sessionStorage.getItem("lgpw") || ""; } catch(e) {}
 
 async function api(body){
@@ -156,6 +173,29 @@ $("logout").onclick = () => { PW=""; try{ sessionStorage.removeItem("lgpw"); }ca
 $("reload").onclick = load;
 ["q","fl","fm","so"].forEach(id => $(id).addEventListener("input", render));
 
+const TPL = {
+  es: {
+    asunto: "Tu candidatura en Linguallogy",
+    invitar: n => `Hola, ${n}:\n\nGracias por tu candidatura para colaborar con Linguallogy. Tu perfil encaja muy bien con los grupos que tenemos ahora.\n\n¿Te va bien una videollamada de 15-20 minutos esta semana o la próxima? Dime dos o tres horarios que te vengan bien y te envío el enlace.\n\nUn saludo,\nEl equipo de Linguallogy`,
+    espera: (n,b) => `Hola, ${n}:\n\nGracias por tu candidatura y por el tiempo que le has dedicado. Tu perfil nos interesa, pero ahora mismo no tenemos un grupo que encaje con tu disponibilidad.\n\n${b ? "Como nos diste permiso, guardamos tu candidatura y te escribiremos en cuanto surja un grupo para ti." : "Si quieres que guardemos tu candidatura para futuros grupos, respóndenos a este correo y la conservaremos 12 meses."}\n\nUn saludo,\nEl equipo de Linguallogy`,
+    rechazar: n => `Hola, ${n}:\n\nGracias por tu interés en Linguallogy y por el tiempo que le has dedicado a tu candidatura.\n\nDespués de revisarla, ahora mismo no tenemos grupos que encajen con tu perfil, así que no vamos a seguir adelante en esta ocasión.\n\nTe deseamos mucha suerte y gracias de nuevo.\n\nUn saludo,\nEl equipo de Linguallogy`,
+  },
+  en: {
+    asunto: "Your application to Linguallogy",
+    invitar: n => `Hi ${n},\n\nThank you for applying to collaborate with Linguallogy. Your profile is a great fit for the groups we have right now.\n\nWould you be available for a short 15-20 minute video call this week or next? Just send me two or three times that suit you and I'll send you the link.\n\nBest regards,\nThe Linguallogy team`,
+    espera: (n,b) => `Hi ${n},\n\nThank you for your application and for the time you put into it. We like your profile, but right now we don't have a group that matches your availability.\n\n${b ? "As you gave us permission, we'll keep your application on file and get in touch as soon as a suitable group comes up." : "If you'd like us to keep your application for future groups, just reply to this email and we'll keep it for 12 months."}\n\nBest regards,\nThe Linguallogy team`,
+    rechazar: n => `Hi ${n},\n\nThank you for your interest in Linguallogy and for the time you put into your application.\n\nAfter reviewing it, we don't currently have groups that match your profile, so we won't be moving forward this time.\n\nWe wish you the very best, and thanks again.\n\nBest regards,\nThe Linguallogy team`,
+  },
+  ca: {
+    asunto: "La teva candidatura a Linguallogy",
+    invitar: n => `Hola, ${n}:\n\nGràcies per la teva candidatura per col·laborar amb Linguallogy. El teu perfil encaixa molt bé amb els grups que tenim ara.\n\nEt va bé una videotrucada de 15-20 minuts aquesta setmana o la següent? Digue'm dos o tres horaris que et vagin bé i t'envio l'enllaç.\n\nSalutacions,\nL'equip de Linguallogy`,
+    espera: (n,b) => `Hola, ${n}:\n\nGràcies per la teva candidatura i pel temps que hi has dedicat. El teu perfil ens interessa, però ara mateix no tenim cap grup que encaixi amb la teva disponibilitat.\n\n${b ? "Com que ens vas donar permís, desem la teva candidatura i t'escriurem quan sorgeixi un grup per a tu." : "Si vols que desem la teva candidatura per a futurs grups, respon aquest correu i la conservarem 12 mesos."}\n\nSalutacions,\nL'equip de Linguallogy`,
+    rechazar: n => `Hola, ${n}:\n\nGràcies pel teu interès en Linguallogy i pel temps que has dedicat a la teva candidatura.\n\nDesprés de revisar-la, ara mateix no tenim grups que encaixin amb el teu perfil, així que no continuarem en aquesta ocasió.\n\nEt desitgem molta sort i gràcies de nou.\n\nSalutacions,\nL'equip de Linguallogy`,
+  },
+};
+const TPL_BTN = [["invitar","Пригласить на разговор","invitado"],["espera","Пока нет группы","espera"],["rechazar","Отказ","descartada"]];
+const LANGNAME = {es:"испанском", en:"английском", ca:"каталанском"};
+
 function horario(d){
   const by = {}; (d||[]).forEach(x => (by[x.dia] = by[x.dia] || []).push(`${x.de}-${x.a}`));
   return Object.keys(by).sort().map(k => `${DIAS[k]||k} ${by[k].join(", ")}`).join(" · ") || "-";
@@ -169,13 +209,26 @@ function fecha(s){ const d=new Date(s); return d.toLocaleDateString("ru-RU",{day
 
 function filtered(){
   const q = $("q").value.trim().toLowerCase(), fl=$("fl").value, fm=$("fm").value;
-  let r = ROWS.filter(x => (!estF || (x.estado||"nueva")===estF) && (!fl || x.idioma_ensena===fl) &&
+  let r = ROWS.filter(x => (!estF || (x.estado||"nueva")===estF) && (!tierF || tierOf(x.score)===tierF) && (!fl || x.idioma_ensena===fl) &&
     (!fm || (fm==="online" ? x.modalidad==="online" : x.modalidad && x.modalidad!=="online")) &&
     (!q || JSON.stringify(x).toLowerCase().includes(q)));
   r.sort($("so").value==="date" ? (a,b)=>b.created_at.localeCompare(a.created_at) : (a,b)=>b.score-a.score || b.created_at.localeCompare(a.created_at));
   return r;
 }
+// puesto en el ranking: por puntuación dentro del idioma y formato elegidos
+function ranks(){
+  const fl=$("fl").value, fm=$("fm").value, m={};
+  ROWS.filter(x => (!fl || x.idioma_ensena===fl) && (!fm || (fm==="online" ? x.modalidad==="online" : x.modalidad && x.modalidad!=="online")) && (x.estado||"nueva")!=="descartada")
+      .sort((a,b)=>b.score-a.score || a.created_at.localeCompare(b.created_at)).forEach((x,i)=>m[x.id]=i+1);
+  return m;
+}
+let RK = {};
 function render(){
+  RK = ranks();
+  const tc = {}; ROWS.forEach(x => { const k=tierOf(x.score); tc[k]=(tc[k]||0)+1; });
+  $("tiers").innerHTML = `<button class="tier ${tierF?"":"on"}" data-t="">Все баллы</button>` +
+    TIERS.map(([k,v,c]) => `<button class="tier ${tierF===k?"on":""}" data-t="${k}"><i style="background:${c}"></i>${v} (${tc[k]||0})</button>`).join("");
+  $("tiers").querySelectorAll(".tier").forEach(b => b.onclick = () => { tierF = b.dataset.t; render(); });
   const counts = {}; ROWS.forEach(x => counts[x.estado||"nueva"] = (counts[x.estado||"nueva"]||0)+1);
   $("chips").innerHTML = `<button class="chip ${estF?"":"on"}" data-e="">Все (${ROWS.length})</button>` +
     ESTADOS.map(([k,v]) => `<button class="chip ${estF===k?"on":""}" data-e="${k}">${v} (${counts[k]||0})</button>`).join("");
@@ -187,9 +240,9 @@ function render(){
 }
 function card(r){
   const est = r.estado || "nueva";
-  return `<div class="card st-${est}" data-id="${r.id}">
+  return `<div class="card st-${est} t-${tierOf(r.score)}" data-id="${r.id}">
     <div class="top"><div class="score ${scoreCls(r.score)}">${r.score}</div>
-      <div style="min-width:0"><div class="name">${esc(r.nombre)}</div><div class="sub">#${r.id} · ${fecha(r.created_at)}</div></div>
+      <div style="min-width:0"><div class="name">${esc(r.nombre)}</div><div class="sub">${RK[r.id]?`<span class="rank">${RK[r.id]} место</span>`:""}#${r.id} · ${fecha(r.created_at)}</div></div>
       <span class="st">${EST[est]||est}</span></div>
     ${langHtml(r)}
     <div class="tags"><span class="tag">${esc(r.nivel==="C2"?"C2/носитель":r.nivel)}</span><span class="tag">${esc(t("ele",r.ele))}</span><span class="tag">${esc(t("anos",r.anos))}</span>
@@ -237,12 +290,29 @@ function openHash(){
       ${r.cv_url ? `<a class="btn small primary" href="${esc(r.cv_url)}" target="_blank" rel="noopener">Открыть CV</a>` : `<span class="sub">CV не приложено</span>`}
       <a class="btn small ghost" href="mailto:${esc(r.email)}">Написать</a>
     </div>
+    <div style="font-weight:600;margin-top:16px">Ответить шаблоном <span class="sub" id="tlang"></span></div>
+    <div class="tpl">${TPL_BTN.map(([k,v]) => `<button class="btn small ghost" data-tpl="${k}">✉ ${v}</button>`).join("")}</div>
+    <div id="draft"></div>
     <div class="stsel">${ESTADOS.map(([k,v]) => `<button class="chip ${est===k?"on":""}" data-st="${k}">${v}</button>`).join("")}</div>
     <label style="font-weight:600">Заметки <span class="saved" id="saved"></span></label>
     <textarea id="notas" placeholder="Что обсудили, когда позвонить…">${esc(r.notas||"")}</textarea>
     <div class="kv">${rows.map(([k,v]) => `<div>${k}</div><div>${v||"-"}</div>`).join("")}</div>
     <div id="delbox"><button class="btn small danger" id="del">Удалить заявку</button></div>`;
   $("ov").hidden = false;
+  const L = TPL[r.lang_form] ? r.lang_form : "es";
+  $("tlang").textContent = `· на ${LANGNAME[L]}, языке анкеты`;
+  const nombre = (r.nombre||"").trim().split(/\s+/)[0] || "";
+  $("panel").querySelectorAll("[data-tpl]").forEach(b => b.onclick = () => {
+    const k = b.dataset.tpl, st = TPL_BTN.find(x=>x[0]===k)[2];
+    const body = k==="espera" ? TPL[L].espera(nombre, r.bolsa) : TPL[L][k](nombre);
+    $("draft").innerHTML = `<div class="draft"><input id="dsub" value="${esc(TPL[L].asunto)}"><textarea id="dbody">${esc(body)}</textarea>
+      <div class="actions"><a class="btn small primary" id="dmail" href="#">Открыть в почте</a><button class="btn small ghost" id="dcopy">Скопировать текст</button>
+      <button class="btn small ghost" id="dmark">Отметить «${EST[st]}»</button><span class="saved" id="dsaved"></span></div>
+      <p class="sub" style="margin:8px 0 0">Текст можно поправить прямо здесь. Если по кнопке «Открыть в почте» ничего не происходит, скопируй текст и вставь в письмо на ${esc(r.email)}.</p></div>`;
+    $("dmail").onclick = e => { e.preventDefault(); location.href = `mailto:${encodeURIComponent(r.email)}?subject=${encodeURIComponent($("dsub").value)}&body=${encodeURIComponent($("dbody").value)}`; };
+    $("dcopy").onclick = async () => { try{ await navigator.clipboard.writeText($("dbody").value); $("dsaved").textContent="скопировано"; }catch(e){ $("dbody").select(); $("dsaved").textContent="выделено, нажми Ctrl/Cmd+C"; } };
+    $("dmark").onclick = async () => { try{ await api({action:"update", id:r.id, estado:st}); r.estado = st; render(); $("panel").querySelectorAll("[data-st]").forEach(c => c.classList.toggle("on", c.dataset.st===st)); $("dsaved").textContent = "статус сохранён"; }catch(e){ $("dsaved").textContent = "не сохранилось"; } };
+  });
   $("close").onclick = () => { history.replaceState(null,"",location.pathname); $("ov").hidden = true; };
   $("panel").querySelectorAll("[data-st]").forEach(b => b.onclick = async () => {
     try{ await api({action:"update", id:r.id, estado:b.dataset.st}); r.estado = b.dataset.st; render(); openHash(); }catch(e){ alertMsg("Не сохранилось: "+e.message); }

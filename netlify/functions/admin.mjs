@@ -6,7 +6,7 @@ export const config = { path: "/api/admin" };
 
 const auth = (k) => (k.startsWith("sb_") ? { apikey: k } : { apikey: k, Authorization: `Bearer ${k}` });
 const json = (status, obj) => new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
-const ESTADOS = ["nueva", "llamar", "entrevista", "prueba", "colabora", "descartada"];
+const ESTADOS = ["nueva", "invitado", "llamar", "entrevista", "prueba", "colabora", "espera", "descartada"];
 
 function okPass(p) {
   const real = String(process.env.ADMIN_PASSWORD || "");
